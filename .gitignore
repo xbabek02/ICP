@@ -50,3 +50,15 @@ compile_commands.json
 
 # QtCreator local machine specific files for imported projects
 *creator.user*
+src/Entities/.vscode/c_cpp_properties.json
+.gitignore
+src/Entities/main.cpp
+src/Entities/.vscode/settings.json
+src/Entities/main.cpp
+src/Entities/.vscode/settings.json
+src/.vscode/targets.log
+.gitignore
+src/Entities/.vscode/targets.log
+src/Entities/.vscode/dryrun.log
+.gitignore
+.gitignore
