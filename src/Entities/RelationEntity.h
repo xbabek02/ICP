@@ -20,13 +20,20 @@ private:
 public:
     RelationEntity(std::string, DiagramEntity *, DiagramEntity *, Enums::Cardinalities, Enums::Cardinalities); // for creating from file
     RelationEntity(DiagramEntity *, DiagramEntity *);                                                          // for creating by user
+    bool inline HasRelationEntity();
     void AddRelationEntity(DiagramEntity *);
     void AddRelationEntity();
+    void DeleteRelation();
     std::string GetName();
+    bool SetName(std::string);
     std::pair<DiagramEntity *, DiagramEntity *> &GetEntites();
     void ChangeCardinality1(Enums::Cardinalities);
     void ChangeCardinality2(Enums::Cardinalities);
     ~RelationEntity();
+
+    class ReplacingRelationEntityException
+    {
+    };
 };
 
 #endif

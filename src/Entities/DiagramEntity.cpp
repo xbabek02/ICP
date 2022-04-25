@@ -10,8 +10,14 @@
 
 long DiagramEntity::ID_generator = 0;
 
-DiagramEntity::DiagramEntity(std::string name) : name(name), ID(ID_generator++)
+DiagramEntity::DiagramEntity(std::string name) : name(name), ID(ID_generator)
 {
+    ID_generator++;
+}
+
+DiagramEntity::DiagramEntity() : name("Entity " + std::to_string(ID_generator)), ID(ID_generator)
+{
+    ID_generator++;
 }
 
 DiagramEntity::~DiagramEntity()
@@ -64,7 +70,7 @@ RelationEntity *DiagramEntity::AddRelation(DiagramEntity &entity)
     catch (std::bad_alloc &e)
     {
         std::cerr << "bad_alloc detected: " << e.what();
-        exit(1);
+        return nullptr;
     }
     this->relations.push_back(relation);
     if (entity != *this)
@@ -97,6 +103,16 @@ RelationEntity *DiagramEntity::AddRelation(std::string name, DiagramEntity &enti
 std::string DiagramEntity::GetName()
 {
     return this->name;
+}
+
+const long DiagramEntity::GetId()
+{
+    return this->ID;
+}
+
+void DiagramEntity::SetName(std::string name)
+{
+    this->name = name;
 }
 
 bool DiagramEntity::operator==(DiagramEntity &other)

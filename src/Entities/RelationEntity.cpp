@@ -3,6 +3,7 @@
 #include "../Common/enums.h"
 
 #include <iostream>
+#include <string>
 
 long RelationEntity::ID_generator = 0;
 
@@ -15,25 +16,33 @@ RelationEntity::RelationEntity(std::string name, DiagramEntity *first, DiagramEn
 }
 
 RelationEntity::RelationEntity(DiagramEntity *first, DiagramEntity *second)
-    : relation_name("<<empty>>"), ID(ID_generator++), first(first), second(second),
+    : relation_name("<<empty " + std::to_string(ID_generator) + ">>"),
+      ID(ID_generator), first(first), second(second),
       cardinality1(Enums::Cardinalities::one), cardinality2(Enums::Cardinalities::one)
 {
     enitites = std::make_pair(first, second);
+    ID_generator++;
 }
 
-void RelationEntity::AddRelationEntity(DiagramEntity *relation)
+void RelationEntity::AddRelationEntity(DiagramEntity *relationEntity)
 {
-    this->relation_name = relation->GetName();
-    this->relation_diagramEntity = relation;
+    this->relation_diagramEntity = relationEntity;
+    relationEntity->SetName(this->relation_name);
+}
+
+bool inline RelationEntity::HasRelationEntity()
+{
+    // does it already have a relation entity?
+    return (this->relation_diagramEntity != nullptr);
 }
 
 void RelationEntity::AddRelationEntity()
 {
-    if (this->relation_diagramEntity != nullptr)
+    if (this->HasRelationEntity())
     {
-        // error window?
-        return;
+        throw ReplacingRelationEntityException();
     }
+
     try
     {
         this->relation_diagramEntity = new DiagramEntity(this->relation_name);
@@ -58,6 +67,17 @@ void RelationEntity::ChangeCardinality2(Enums::Cardinalities arg)
 std::string RelationEntity::GetName()
 {
     return this->relation_name;
+}
+
+bool RelationEntity::SetName(std::string name)
+{
+    // checking if relation between same two entities and new name already exists
+    if (this->first->GetRelation(*this->second, name) != nullptr)
+    {
+        return false;
+    }
+    this->relation_name = name;
+    return true;
 }
 
 std::pair<DiagramEntity *, DiagramEntity *> &RelationEntity::GetEntites()

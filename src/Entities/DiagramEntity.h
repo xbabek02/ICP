@@ -19,9 +19,13 @@ private:
     static long ID_generator;
 
 public:
+    DiagramEntity();
     explicit DiagramEntity(std::string);
     void AddAttrib(std::string);
+    void RemoveAttrib();
     std::string GetName();
+    void SetName(std::string);
+    const long GetId();
     RelationEntity *AddRelation(DiagramEntity &);                                                          // for use by user
     RelationEntity *AddRelation(std::string, DiagramEntity &, Enums::Cardinalities, Enums::Cardinalities); // for use from file
     RelationEntity *GetRelation(DiagramEntity &, std::string);
