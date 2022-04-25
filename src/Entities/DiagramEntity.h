@@ -5,11 +5,14 @@
 #include <string>
 
 #include "RelationEntity.h"
+#include "ModelObject.h"
 #include "../Common/enums.h"
+#include "Model.h"
 
 class RelationEntity;
+class Model;
 
-class DiagramEntity
+class DiagramEntity : public ModelObject
 {
 private:
     std::string name;
@@ -22,15 +25,18 @@ public:
     DiagramEntity();
     explicit DiagramEntity(std::string);
     void AddAttrib(std::string);
-    void RemoveAttrib();
+    void RemoveAttrib(std::string);
     std::string GetName();
     void SetName(std::string);
     const long GetId();
-    RelationEntity *AddRelation(DiagramEntity &);                                                          // for use by user
-    RelationEntity *AddRelation(std::string, DiagramEntity &, Enums::Cardinalities, Enums::Cardinalities); // for use from file
-    RelationEntity *GetRelation(DiagramEntity &, std::string);
+    RelationEntity *CreateRelation(DiagramEntity &, Model *);                                                          // for use by user
+    RelationEntity *CreateRelation(std::string, DiagramEntity &, Enums::Cardinalities, Enums::Cardinalities, Model *); // for use from file
     bool operator==(DiagramEntity &);
     bool operator!=(DiagramEntity &);
+    void ChangePosition(int pos_x, int pos_y);
+
+    bool RemoveRelationFromVector(RelationEntity *);
+
     ~DiagramEntity();
 };
 

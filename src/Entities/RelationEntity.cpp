@@ -64,6 +64,11 @@ void RelationEntity::ChangeCardinality2(Enums::Cardinalities arg)
     this->cardinality2 = arg;
 }
 
+long RelationEntity::GetId()
+{
+    return this->ID;
+}
+
 std::string RelationEntity::GetName()
 {
     return this->relation_name;
@@ -71,11 +76,6 @@ std::string RelationEntity::GetName()
 
 bool RelationEntity::SetName(std::string name)
 {
-    // checking if relation between same two entities and new name already exists
-    if (this->first->GetRelation(*this->second, name) != nullptr)
-    {
-        return false;
-    }
     this->relation_name = name;
     return true;
 }
@@ -84,7 +84,31 @@ std::pair<DiagramEntity *, DiagramEntity *> &RelationEntity::GetEntites()
 {
     return this->enitites;
 }
+bool RelationEntity::operator==(RelationEntity &other)
+{
+    if (this->ID == other.ID)
+    {
+        return true;
+    }
+    return false;
+}
+
+bool RelationEntity::operator!=(RelationEntity &other)
+{
+    if (this->ID == other.ID)
+    {
+        return false;
+    }
+    return true;
+}
 
 RelationEntity::~RelationEntity()
 {
+    this->first->RemoveRelationFromVector(this);
+    this->second->RemoveRelationFromVector(this);
+    // remove relation entity??
+    if (HasRelationEntity())
+    {
+        delete this->relation_diagramEntity;
+    }
 }

@@ -7,6 +7,9 @@
 
 #include <vector>
 
+class RelationEntity;
+class DiagramEntity;
+
 class Model
 {
 private:
@@ -15,15 +18,28 @@ private:
     static const int max_pos_x = INT32_MAX; // need to be updated
     static const int max_pos_y = INT32_MAX;
 
-    std::vector<ModelObject *> entities;
+    std::vector<DiagramEntity *> entities;
+    std::vector<RelationEntity *> relations;
 
 public:
-    ModelObject *CreateEntity();
-    ModelObject *CreateEntity(std::string);
-    ModelObject *CreateEntity(std::string, int, int);
-    ModelObject *GetByName(std::string);
-    void DeleteEntity(ModelObject *);
-    bool DeleteByName(std::string);
+    DiagramEntity *CreateEntity();
+    DiagramEntity *CreateEntity(std::string);
+    DiagramEntity *CreateEntity(std::string, int pos_x, int pos_y);
+    DiagramEntity *GetEntityById(long Id);
+
+    RelationEntity *CreateRelation(DiagramEntity &, DiagramEntity &); // for use by user
+    RelationEntity *CreateRelation(std::string, DiagramEntity &, DiagramEntity &,
+                                   Enums::Cardinalities, Enums::Cardinalities); // for use from file
+
+    void DeleteEntity(DiagramEntity *);
+    bool DeleteEntityById(long Id);
+
+    void DeleteRelation(RelationEntity *);
+    bool DeleteRelationById(long Id);
+
+    RelationEntity *GetRelationById(long Id);
+
+    void PushRelation(RelationEntity *);
 
     Model();
     ~Model();

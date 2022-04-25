@@ -14,38 +14,73 @@ Model::Model()
 {
 }
 
-ModelObject *Model::CreateEntity(std::string name)
+DiagramEntity *Model::CreateEntity()
 {
-    auto mo = Model::CreateEntity();
-    if (mo == nullptr)
+    DiagramEntity *de;
+    try
+    {
+        de = new DiagramEntity();
+    }
+    catch (std::bad_alloc &e)
+    {
+        std::cerr << "bad_alloc detected: " << e.what();
+        // to be caught later
+        throw Model::AllocException();
+    }
+    de->ChangePosition(Model::default_pos_x, Model::default_pos_y);
+    this->entities.push_back(de);
+    return de;
+}
+
+DiagramEntity *Model::CreateEntity(std::string name)
+{
+    auto me = Model::CreateEntity();
+    if (me == nullptr)
     {
         return nullptr;
     }
     for (auto entity : this->entities)
     {
-        if (entity->GetData()->GetName() == name)
+        if (entity->GetName() == name)
         {
             throw Model::NameExistsException();
         }
     }
-    mo->GetData()->SetName(name);
-    return mo;
+    me->SetName(name);
+    return me;
 }
 
-ModelObject *Model::CreateEntity(std::string name, int pos_x, int pos_y)
+DiagramEntity *Model::CreateEntity(std::string name, int pos_x, int pos_y)
 {
-    auto mo = Model::CreateEntity();
-    auto mo = Model::CreateEntity(name);
-
-    mo->ChangePosition(pos_x, pos_y);
-    return mo;
+    auto me = Model::CreateEntity(name);
+    if (me == nullptr)
+    {
+        return nullptr;
+    }
+    me->ChangePosition(pos_x, pos_y);
+    return me;
 }
 
-ModelObject *Model::GetByName(std::string name)
+void Model::PushRelation(RelationEntity *entity)
+{
+    this->relations.push_back(entity);
+}
+
+RelationEntity *Model::CreateRelation(DiagramEntity &e1, DiagramEntity &e2)
+{
+    return e1.CreateRelation(e2, this);
+}
+RelationEntity *Model::CreateRelation(std::string name, DiagramEntity &e1, DiagramEntity &e2,
+                                      Enums::Cardinalities c1, Enums::Cardinalities c2)
+{
+    return e1.CreateRelation(name, e2, c1, c2, this);
+}
+
+DiagramEntity *Model::GetEntityById(long Id)
 {
     for (auto entity : Model::entities)
     {
-        if (entity->GetData()->GetName() == name)
+        if (entity->GetId() == Id)
         {
             return entity;
         }
@@ -53,60 +88,60 @@ ModelObject *Model::GetByName(std::string name)
     return nullptr;
 }
 
-bool Model::DeleteByName(std::string name)
+bool Model::DeleteEntityById(long Id)
 {
     for (auto entity : Model::entities)
     {
-        if (entity->GetData()->GetName() == name)
+        if (entity->GetId() == Id)
         {
-            this->DeleteEntity(entity);
+            DeleteEntity(entity);
+            return true;
         }
     }
+    return false;
 }
 
-void Model::DeleteEntity(ModelObject *entity)
+void Model::DeleteEntity(DiagramEntity *entity)
 {
     this->entities.erase(std::find(this->entities.begin(), this->entities.end(), entity));
-    delete entity->GetData();
     delete entity;
 }
 
-ModelObject *Model::CreateEntity()
+bool Model::DeleteRelationById(long Id)
 {
-    ModelObject *mo;
-    try
+    for (auto relation : this->relations)
     {
-        mo = new ModelObject();
+        if (relation->GetId() == Id)
+        {
+            DeleteRelation(relation);
+            return true;
+        }
     }
-    catch (std::bad_alloc &e)
+    return false;
+}
+
+RelationEntity *Model::GetRelationById(long Id)
+{
+    for (auto relation : this->relations)
     {
-        std::cerr << "bad_alloc detected: " << e.what();
-        // to be caught later
-        throw Model::AllocException();
+        if (relation->GetId() == Id)
+        {
+            return relation;
+        }
     }
-    mo->ChangePosition(Model::default_pos_x, Model::default_pos_y);
-    try
-    {
-        DiagramEntity **data_destination;
-        *data_destination = mo->GetData();
-        *data_destination = new DiagramEntity();
-    }
-    catch (std::bad_alloc &e)
-    {
-        std::cerr << "bad_alloc detected: " << e.what();
-        delete mo;
-        // to be caught later
-        throw Model::AllocException();
-    }
-    this->entities.push_back(mo);
-    return mo;
+    return nullptr;
+}
+
+void Model::DeleteRelation(RelationEntity *relation)
+{
+    this->relations.erase(std::find(this->relations.begin(), this->relations.end(), relation));
+    delete relation;
 }
 
 Model::~Model()
 {
     for (auto entity : this->entities)
     {
-        delete entity->GetData();
         delete entity;
     }
 }

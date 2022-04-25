@@ -3,6 +3,7 @@
 #include <new>
 #include <iostream>
 #include <bits/stdc++.h>
+#include <algorithm>
 
 #include "RelationEntity.h"
 #include "DiagramEntity.h"
@@ -18,6 +19,11 @@ DiagramEntity::DiagramEntity(std::string name) : name(name), ID(ID_generator)
 DiagramEntity::DiagramEntity() : name("Entity " + std::to_string(ID_generator)), ID(ID_generator)
 {
     ID_generator++;
+}
+
+void DiagramEntity::ChangePosition(int pos_x, int pos_y)
+{
+    ModelObject::ChangePosition(pos_x, pos_y);
 }
 
 DiagramEntity::~DiagramEntity()
@@ -43,24 +49,16 @@ DiagramEntity::~DiagramEntity()
 
 void DiagramEntity::AddAttrib(std::string attrib)
 {
+    std::find(this->attributes.begin(), this->attributes.end(), attrib);
+
     this->attributes.push_back(attrib);
 }
 
-RelationEntity *DiagramEntity::GetRelation(DiagramEntity &entity, std::string name)
+void DiagramEntity::RemoveAttrib(std::string attrib)
 {
-    for (auto relation : this->relations)
-    {
-        std::pair<DiagramEntity *, DiagramEntity *> res = relation->GetEntites();
-        if ((*res.first == entity && *res.second == *this) || (*res.first == *this && *res.second == entity))
-        {
-            if (relation->GetName() == name)
-                return relation;
-        }
-    }
-    return nullptr;
 }
 
-RelationEntity *DiagramEntity::AddRelation(DiagramEntity &entity)
+RelationEntity *DiagramEntity::CreateRelation(DiagramEntity &entity, Model *m)
 {
     RelationEntity *relation;
     try
@@ -77,10 +75,12 @@ RelationEntity *DiagramEntity::AddRelation(DiagramEntity &entity)
     {
         entity.relations.push_back(relation);
     }
+    m->PushRelation(relation);
     return relation;
 }
 
-RelationEntity *DiagramEntity::AddRelation(std::string name, DiagramEntity &entity, Enums::Cardinalities cardinality1, Enums::Cardinalities cardinality2)
+RelationEntity *DiagramEntity::CreateRelation(std::string name, DiagramEntity &entity,
+                                              Enums::Cardinalities cardinality1, Enums::Cardinalities cardinality2, Model *m)
 {
     RelationEntity *relation;
     try
@@ -97,7 +97,22 @@ RelationEntity *DiagramEntity::AddRelation(std::string name, DiagramEntity &enti
     {
         entity.relations.push_back(relation);
     }
+
+    m->PushRelation(relation);
     return relation;
+}
+
+bool DiagramEntity::RemoveRelationFromVector(RelationEntity *entity)
+{
+    for (auto relation : this->relations)
+    {
+        if (relation == entity)
+        {
+            this->relations.erase(std::find(this->relations.begin(), this->relations.end(), relation));
+            return true;
+        }
+    }
+    return false;
 }
 
 std::string DiagramEntity::GetName()

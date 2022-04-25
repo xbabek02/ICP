@@ -23,12 +23,15 @@ public:
     bool inline HasRelationEntity();
     void AddRelationEntity(DiagramEntity *);
     void AddRelationEntity();
-    void DeleteRelation();
+    long GetId();
     std::string GetName();
     bool SetName(std::string);
     std::pair<DiagramEntity *, DiagramEntity *> &GetEntites();
     void ChangeCardinality1(Enums::Cardinalities);
     void ChangeCardinality2(Enums::Cardinalities);
+    bool operator==(RelationEntity &other);
+    bool operator!=(RelationEntity &other);
+
     ~RelationEntity();
 
     class ReplacingRelationEntityException

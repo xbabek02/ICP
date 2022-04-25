@@ -1,5 +1,5 @@
 make all --dry-run --keep-going --print-directory
 make: Entering directory '/mnt/d/repos/ICP/src/Entities'
-g++ DiagramEntity.cpp main.cpp RelationEntity.cpp -g -o out.o
+g++ DiagramEntity.cpp main.cpp RelationEntity.cpp Model.cpp ModelObject.cpp -g -o out.o
 make: Leaving directory '/mnt/d/repos/ICP/src/Entities'
  
