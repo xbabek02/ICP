@@ -7,6 +7,13 @@ int main()
 {
     DiagramEntity de = DiagramEntity("haha");
     std::cout << de.GetName() << std::endl;
+
+    de.AddAttrib("pica");
+    DiagramEntity de2 = DiagramEntity("lala");
+
+    auto re = de.AddRelation(de2);
+
+    return 0;
 }
 
 /*

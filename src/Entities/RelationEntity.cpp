@@ -4,16 +4,21 @@
 
 #include <iostream>
 
+long RelationEntity::ID_generator = 0;
+
 RelationEntity::RelationEntity(std::string name, DiagramEntity *first, DiagramEntity *second,
                                Enums::Cardinalities cardinality1, Enums::Cardinalities cardinality2)
-    : relation_name(name), first(first), second(second), cardinality1(cardinality1), cardinality2(cardinality2)
+    : relation_name(name), ID(ID_generator++), first(first), second(second),
+      cardinality1(cardinality1), cardinality2(cardinality2)
 {
+    enitites = std::make_pair(first, second);
 }
 
 RelationEntity::RelationEntity(DiagramEntity *first, DiagramEntity *second)
-    : relation_name("<<empty>>"), first(first), second(second),
+    : relation_name("<<empty>>"), ID(ID_generator++), first(first), second(second),
       cardinality1(Enums::Cardinalities::one), cardinality2(Enums::Cardinalities::one)
 {
+    enitites = std::make_pair(first, second);
 }
 
 void RelationEntity::AddRelationEntity(DiagramEntity *relation)
@@ -48,6 +53,16 @@ void RelationEntity::ChangeCardinality1(Enums::Cardinalities arg)
 void RelationEntity::ChangeCardinality2(Enums::Cardinalities arg)
 {
     this->cardinality2 = arg;
+}
+
+std::string RelationEntity::GetName()
+{
+    return this->relation_name;
+}
+
+std::pair<DiagramEntity *, DiagramEntity *> &RelationEntity::GetEntites()
+{
+    return this->enitites;
 }
 
 RelationEntity::~RelationEntity()

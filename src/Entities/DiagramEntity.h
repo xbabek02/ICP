@@ -15,13 +15,18 @@ private:
     std::string name;
     std::vector<std::string> attributes;
     std::vector<RelationEntity *> relations;
+    const long ID;
+    static long ID_generator;
 
 public:
     explicit DiagramEntity(std::string);
     void AddAttrib(std::string);
     std::string GetName();
-    void AddRelation(DiagramEntity &);                                                          // for use by user
-    void AddRelation(std::string, DiagramEntity &, Enums::Cardinalities, Enums::Cardinalities); // for use from file
+    RelationEntity *AddRelation(DiagramEntity &);                                                          // for use by user
+    RelationEntity *AddRelation(std::string, DiagramEntity &, Enums::Cardinalities, Enums::Cardinalities); // for use from file
+    RelationEntity *GetRelation(DiagramEntity &, std::string);
+    bool operator==(DiagramEntity &);
+    bool operator!=(DiagramEntity &);
     ~DiagramEntity();
 };
 
