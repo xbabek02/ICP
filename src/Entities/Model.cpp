@@ -71,9 +71,10 @@ RelationEntity *Model::CreateRelation(DiagramEntity &e1, DiagramEntity &e2)
     return e1.CreateRelation(e2, this);
 }
 RelationEntity *Model::CreateRelation(std::string name, DiagramEntity &e1, DiagramEntity &e2,
+                                      Enums::RelationTypes type, Enums::RelationSite site,
                                       Enums::Cardinalities c1, Enums::Cardinalities c2)
 {
-    return e1.CreateRelation(name, e2, c1, c2, this);
+    return e1.CreateRelation(name, e2, type, site, c1, c2, this);
 }
 
 DiagramEntity *Model::GetEntityById(long Id)

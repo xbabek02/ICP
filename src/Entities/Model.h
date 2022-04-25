@@ -29,6 +29,7 @@ public:
 
     RelationEntity *CreateRelation(DiagramEntity &, DiagramEntity &); // for use by user
     RelationEntity *CreateRelation(std::string, DiagramEntity &, DiagramEntity &,
+                                   Enums::RelationTypes, Enums::RelationSite,
                                    Enums::Cardinalities, Enums::Cardinalities); // for use from file
 
     void DeleteEntity(DiagramEntity *);

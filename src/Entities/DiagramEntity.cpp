@@ -8,6 +8,7 @@
 #include "RelationEntity.h"
 #include "DiagramEntity.h"
 #include "../Common/enums.h"
+#include "AttributeEntity.h"
 
 long DiagramEntity::ID_generator = 0;
 
@@ -26,36 +27,40 @@ void DiagramEntity::ChangePosition(int pos_x, int pos_y)
     ModelObject::ChangePosition(pos_x, pos_y);
 }
 
-DiagramEntity::~DiagramEntity()
+void DiagramEntity::AddAttrib(Enums::Attrib_type type, std::string data)
 {
-    RelationEntity *a_temp;
-    bool result;
-    for (auto relation : this->relations)
+    AttributeEntity *attrib;
+    try
     {
-        auto res = relation->GetEntites();
-        if (*res.first == *res.second)
-            delete relation;
-        else
-        {
-            DiagramEntity *second = ((*this == *res.first) ? res.second : res.first);
-            auto it = std::remove_if(second->relations.begin(), second->relations.end(),
-                                     [relation](auto a)
-                                     { return a == relation; });
-            second->relations.erase(it, second->relations.end());
-            delete relation;
-        }
+        attrib = new AttributeEntity(type, data);
     }
-}
-
-void DiagramEntity::AddAttrib(std::string attrib)
-{
-    std::find(this->attributes.begin(), this->attributes.end(), attrib);
-
+    catch (std::bad_alloc &e)
+    {
+        std::cerr << "bad_alloc detected: " << e.what();
+        exit(1);
+    }
     this->attributes.push_back(attrib);
 }
 
-void DiagramEntity::RemoveAttrib(std::string attrib)
+void DiagramEntity::RemoveAttribLast()
 {
+    if (attributes.size() > 0)
+    {
+        auto temp = attributes.back();
+        attributes.pop_back();
+        delete temp;
+    }
+}
+
+void DiagramEntity::RemoveAttribAt(std::size_t index)
+{
+    if (attributes.size() <= index)
+    {
+        return;
+    }
+
+    auto temp = attributes.at(index);
+    attributes.erase(attributes.begin() + index);
 }
 
 RelationEntity *DiagramEntity::CreateRelation(DiagramEntity &entity, Model *m)
@@ -80,12 +85,13 @@ RelationEntity *DiagramEntity::CreateRelation(DiagramEntity &entity, Model *m)
 }
 
 RelationEntity *DiagramEntity::CreateRelation(std::string name, DiagramEntity &entity,
+                                              Enums::RelationTypes type, Enums::RelationSite site,
                                               Enums::Cardinalities cardinality1, Enums::Cardinalities cardinality2, Model *m)
 {
     RelationEntity *relation;
     try
     {
-        relation = new RelationEntity(name, this, &entity, cardinality1, cardinality2);
+        relation = new RelationEntity(name, this, &entity, type, site, cardinality1, cardinality2);
     }
     catch (std::bad_alloc &e)
     {
@@ -146,4 +152,30 @@ bool DiagramEntity::operator!=(DiagramEntity &other)
         return false;
     }
     return true;
+}
+
+DiagramEntity::~DiagramEntity()
+{
+    // Cascade delete of attributes
+    for (auto attrib : this->attributes)
+    {
+        delete attrib;
+    }
+
+    // Cascade delete of relations
+    for (auto relation : this->relations)
+    {
+        auto res = relation->GetEntites();
+        if (*res.first == *res.second)
+            delete relation;
+        else
+        {
+            DiagramEntity *second = ((*this == *res.first) ? res.second : res.first);
+            auto it = std::remove_if(second->relations.begin(), second->relations.end(),
+                                     [relation](auto a)
+                                     { return a == relation; });
+            second->relations.erase(it, second->relations.end());
+            delete relation;
+        }
+    }
 }

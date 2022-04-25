@@ -8,9 +8,10 @@
 long RelationEntity::ID_generator = 0;
 
 RelationEntity::RelationEntity(std::string name, DiagramEntity *first, DiagramEntity *second,
-                               Enums::Cardinalities cardinality1, Enums::Cardinalities cardinality2)
+                               Enums::RelationTypes type, Enums::RelationSite site,
+                               Enums::Cardinalities c1, Enums::Cardinalities c2)
     : relation_name(name), ID(ID_generator++), first(first), second(second),
-      cardinality1(cardinality1), cardinality2(cardinality2)
+      site(site), type(type), cardinality1(c1), cardinality2(c2)
 {
     enitites = std::make_pair(first, second);
 }
@@ -18,16 +19,25 @@ RelationEntity::RelationEntity(std::string name, DiagramEntity *first, DiagramEn
 RelationEntity::RelationEntity(DiagramEntity *first, DiagramEntity *second)
     : relation_name("<<empty " + std::to_string(ID_generator) + ">>"),
       ID(ID_generator), first(first), second(second),
+      type(Enums::RelationTypes::asociation), site(Enums::RelationSite::first),
       cardinality1(Enums::Cardinalities::one), cardinality2(Enums::Cardinalities::one)
 {
     enitites = std::make_pair(first, second);
     ID_generator++;
 }
 
-void RelationEntity::AddRelationEntity(DiagramEntity *relationEntity)
+inline void RelationEntity::SwitchRelationSite()
 {
+    site = (site == Enums::RelationSite::first) ? Enums::RelationSite::second : Enums::RelationSite::first;
+}
+
+inline void RelationEntity::AddRelationEntity(DiagramEntity *relationEntity)
+{
+    if (this->HasRelationEntity())
+    {
+        throw ReplacingRelationEntityException();
+    }
     this->relation_diagramEntity = relationEntity;
-    relationEntity->SetName(this->relation_name);
 }
 
 bool inline RelationEntity::HasRelationEntity()
@@ -42,7 +52,6 @@ void RelationEntity::AddRelationEntity()
     {
         throw ReplacingRelationEntityException();
     }
-
     try
     {
         this->relation_diagramEntity = new DiagramEntity(this->relation_name);
@@ -54,12 +63,12 @@ void RelationEntity::AddRelationEntity()
     }
 }
 
-void RelationEntity::ChangeCardinality1(Enums::Cardinalities arg)
+inline void RelationEntity::ChangeCardinality1(Enums::Cardinalities arg)
 {
     this->cardinality1 = arg;
 }
 
-void RelationEntity::ChangeCardinality2(Enums::Cardinalities arg)
+inline void RelationEntity::ChangeCardinality2(Enums::Cardinalities arg)
 {
     this->cardinality2 = arg;
 }
