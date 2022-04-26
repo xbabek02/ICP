@@ -42,6 +42,16 @@ void DiagramEntity::AddAttrib(Enums::Attrib_type type, std::string data)
     this->attributes.push_back(attrib);
 }
 
+inline void DiagramEntity::SwitchAttribTypeAt(std::size_t index)
+{
+    attributes.at(index)->SwitchType();
+}
+
+inline void DiagramEntity::UpdateAttribAt(std::size_t index, std::string new_data)
+{
+    attributes.at(index)->SetData(new_data);
+}
+
 void DiagramEntity::RemoveAttribLast()
 {
     if (attributes.size() > 0)

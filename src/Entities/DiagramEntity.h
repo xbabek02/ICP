@@ -28,6 +28,8 @@ public:
     explicit DiagramEntity(std::string);
 
     void AddAttrib(Enums::Attrib_type, std::string);
+    inline void UpdateAttribAt(std::size_t, std::string new_data);
+    inline void SwitchAttribTypeAt(std::size_t);
     void RemoveAttribLast();
     void RemoveAttribAt(std::size_t);
 

@@ -13,6 +13,8 @@ private:
 
 public:
     AttributeEntity();
+    void SetData(std::string);
+    void SwitchType();
     AttributeEntity(Enums::Attrib_type, std::string);
     ~AttributeEntity();
 };
