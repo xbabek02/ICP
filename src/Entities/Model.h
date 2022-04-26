@@ -32,6 +32,10 @@ public:
                                    Enums::RelationTypes, Enums::RelationSite,
                                    Enums::Cardinalities, Enums::Cardinalities); // for use from file
 
+    RelationEntity *CreateRelationById(std::string, long id1, long id2,
+                                       Enums::RelationTypes, Enums::RelationSite,
+                                       Enums::Cardinalities, Enums::Cardinalities); // for use from file
+
     void DeleteEntity(DiagramEntity *);
     bool DeleteEntityById(long Id);
 
@@ -46,9 +50,6 @@ public:
     ~Model();
 
     // exceptions
-    class NameExistsException
-    {
-    };
     class AllocException
     {
     };

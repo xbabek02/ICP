@@ -39,13 +39,6 @@ DiagramEntity *Model::CreateEntity(std::string name)
     {
         return nullptr;
     }
-    for (auto entity : this->entities)
-    {
-        if (entity->GetName() == name)
-        {
-            throw Model::NameExistsException();
-        }
-    }
     me->SetName(name);
     return me;
 }
@@ -75,6 +68,16 @@ RelationEntity *Model::CreateRelation(std::string name, DiagramEntity &e1, Diagr
                                       Enums::Cardinalities c1, Enums::Cardinalities c2)
 {
     return e1.CreateRelation(name, e2, type, site, c1, c2, this);
+}
+
+RelationEntity *Model::CreateRelationById(std::string name, long id1, long id2,
+                                          Enums::RelationTypes type, Enums::RelationSite site,
+                                          Enums::Cardinalities c1, Enums::Cardinalities c2)
+{
+    auto ent1 = GetEntityById(id1);
+    auto ent2 = GetEntityById(id2);
+
+    CreateRelation(*ent1, *ent2);
 }
 
 DiagramEntity *Model::GetEntityById(long Id)
