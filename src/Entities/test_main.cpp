@@ -5,7 +5,7 @@
 #include "ModelObject.h"
 
 #include <iostream>
-
+/*
 int main()
 {
     Model m;
@@ -15,3 +15,4 @@ int main()
 
     m.DeleteRelationById(0);
 }
+*/

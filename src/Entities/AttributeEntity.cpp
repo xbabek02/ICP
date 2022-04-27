@@ -14,7 +14,7 @@ void AttributeEntity::SetData(std::string data)
 
 void AttributeEntity::SwitchType()
 {
-    type = (type == Enums::Attrib_type::field) ? type = Enums::Attrib_type::method : Enums::Attrib_type::field;
+    this->type = (this->type == Enums::Attrib_type::field) ? this->type = Enums::Attrib_type::method : Enums::Attrib_type::field;
 }
 
 AttributeEntity::~AttributeEntity()

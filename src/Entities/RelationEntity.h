@@ -10,17 +10,18 @@ class DiagramEntity;
 class RelationEntity
 {
 private:
-    long ID;
     static long ID_generator;
+    long ID;
     std::string relation_name;
 
     DiagramEntity *first, *second, *relation_diagramEntity;
-    std::pair<DiagramEntity *, DiagramEntity *> enitites;
 
     Enums::Cardinalities cardinality1, cardinality2;
 
     Enums::RelationTypes type;
     Enums::RelationSite site;
+
+    std::pair<DiagramEntity *, DiagramEntity *> enitites;
 
 public:
     RelationEntity(std::string, DiagramEntity *, DiagramEntity *,

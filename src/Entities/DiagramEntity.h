@@ -35,7 +35,7 @@ public:
 
     std::string GetName();
     void SetName(std::string);
-    const long GetId();
+    long GetId();
 
     RelationEntity *CreateRelation(DiagramEntity &, Model *); // for use by user
     RelationEntity *CreateRelation(std::string, DiagramEntity &,

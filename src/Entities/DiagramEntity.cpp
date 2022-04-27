@@ -2,7 +2,6 @@
 #include <string>
 #include <new>
 #include <iostream>
-#include <bits/stdc++.h>
 #include <algorithm>
 
 #include "RelationEntity.h"
@@ -12,12 +11,12 @@
 
 long DiagramEntity::ID_generator = 0;
 
-DiagramEntity::DiagramEntity(std::string name) : name(name), ID(ID_generator)
+DiagramEntity::DiagramEntity(std::string name) : ID(ID_generator), name(name)
 {
     ID_generator++;
 }
 
-DiagramEntity::DiagramEntity() : name("Entity " + std::to_string(ID_generator)), ID(ID_generator)
+DiagramEntity::DiagramEntity() : ID(ID_generator), name("Entity " + std::to_string(ID_generator))
 {
     ID_generator++;
 }
@@ -68,8 +67,6 @@ void DiagramEntity::RemoveAttribAt(std::size_t index)
     {
         return;
     }
-
-    auto temp = attributes.at(index);
     attributes.erase(attributes.begin() + index);
 }
 
@@ -136,7 +133,7 @@ std::string DiagramEntity::GetName()
     return this->name;
 }
 
-const long DiagramEntity::GetId()
+long DiagramEntity::GetId()
 {
     return this->ID;
 }
@@ -182,7 +179,7 @@ DiagramEntity::~DiagramEntity()
         {
             DiagramEntity *second = ((*this == *res.first) ? res.second : res.first);
             auto it = std::remove_if(second->relations.begin(), second->relations.end(),
-                                     [relation](auto a)
+                                     [relation](RelationEntity* a)
                                      { return a == relation; });
             second->relations.erase(it, second->relations.end());
             delete relation;

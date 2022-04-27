@@ -10,17 +10,19 @@ long RelationEntity::ID_generator = 0;
 RelationEntity::RelationEntity(std::string name, DiagramEntity *first, DiagramEntity *second,
                                Enums::RelationTypes type, Enums::RelationSite site,
                                Enums::Cardinalities c1, Enums::Cardinalities c2)
-    : relation_name(name), ID(ID_generator++), first(first), second(second),
-      site(site), type(type), cardinality1(c1), cardinality2(c2)
-{
+    : ID(ID_generator++), relation_name(name), first(first), second(second), relation_diagramEntity(nullptr),
+       cardinality1(c1), cardinality2(c2), type(type), site(site)
+{\
     enitites = std::make_pair(first, second);
 }
 
 RelationEntity::RelationEntity(DiagramEntity *first, DiagramEntity *second)
-    : relation_name("<<empty " + std::to_string(ID_generator) + ">>"),
-      ID(ID_generator), first(first), second(second),
-      type(Enums::RelationTypes::asociation), site(Enums::RelationSite::first),
-      cardinality1(Enums::Cardinalities::one), cardinality2(Enums::Cardinalities::one)
+    : ID(ID_generator), relation_name("<<empty " + std::to_string(ID_generator) + ">>"),
+      first(first), second(second),
+      relation_diagramEntity(nullptr),
+      cardinality1(Enums::Cardinalities::one), cardinality2(Enums::Cardinalities::one),
+      type(Enums::RelationTypes::asociation), site(Enums::RelationSite::first)
+
 {
     enitites = std::make_pair(first, second);
     ID_generator++;

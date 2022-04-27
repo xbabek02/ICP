@@ -9,20 +9,35 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    classdiagramitem.cpp \
-    classitemhead.cpp \
-    connectline.cpp \
+    View/classdiagramitem.cpp \
+    View/classitemhead.cpp \
+    View/connectline.cpp \
+    View/mainwindow.cpp \
     main.cpp \
-    mainwindow.cpp
+\
+    Entities/AttributeEntity.cpp \
+    Entities/DiagramEntity.cpp \
+    Entities/Model.cpp \
+    Entities/ModelObject.cpp \
+    Entities/RelationEntity.cpp \
+    IO/ioxmlparsing.cpp
 
 HEADERS += \
-    classdiagramitem.h \
-    classitemhead.h \
-    connectline.h \
-    mainwindow.h
+    View/classdiagramitem.h \
+    View/classitemhead.h \
+    View/connectline.h \
+    View/mainwindow.h \
+\
+    Entities/AttributeEntity.h \
+    Entities/DiagramEntity.h \
+    Entities/Model.h \
+    Entities/ModelObject.h \
+    Entities/RelationEntity.h \
+    Common/enums.h \ 
+    IO/ioxmlparsing.h
 
 FORMS += \
-    mainwindow.ui
+    View/mainwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
