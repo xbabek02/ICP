@@ -5,6 +5,12 @@
 
 #include <string>
 
+/**
+ * @brief The AttributeEntity class
+ * Is responsible for attribute storage
+ * Attribute can be either field or a method
+ * Attributes are stored inside of RelationEntity in the relations vector
+ */
 class AttributeEntity
 {
 private:
@@ -12,9 +18,10 @@ private:
     std::string data;
 
 public:
-    AttributeEntity();
     void SetData(std::string);
+    std::string GetData();
     void SwitchType();
+    Enums::Attrib_type GetType();
     AttributeEntity(Enums::Attrib_type, std::string);
     ~AttributeEntity();
 };

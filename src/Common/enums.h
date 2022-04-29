@@ -1,9 +1,8 @@
 #ifndef __ENUMS_H__
 #define __ENUMS_H__
 
-class Enums
+namespace Enums
 {
-public:
     enum Cardinalities
     {
         none,
@@ -23,11 +22,17 @@ public:
         field,
         method
     };
-    enum RelationSite
+    enum RelationSide
     {
         first,
         second
     };
-};
+
+    const char*CardinalityToLiteral(Cardinalities c);
+    const char*TypeToLiteral(RelationTypes t);
+    Cardinalities LiteralToCardinality(const char* c);
+    RelationTypes LiteralToType(const char* t);
+}
+
 
 #endif

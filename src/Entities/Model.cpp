@@ -64,20 +64,22 @@ RelationEntity *Model::CreateRelation(DiagramEntity &e1, DiagramEntity &e2)
     return e1.CreateRelation(e2, this);
 }
 RelationEntity *Model::CreateRelation(std::string name, DiagramEntity &e1, DiagramEntity &e2,
-                                      Enums::RelationTypes type, Enums::RelationSite site,
-                                      Enums::Cardinalities c1, Enums::Cardinalities c2)
+                                      Enums::RelationTypes type, Enums::RelationSide side,
+                                      Enums::Cardinalities c1, Enums::Cardinalities c2,
+                                      int node1, int node2, int distance)
 {
-    return e1.CreateRelation(name, e2, type, site, c1, c2, this);
+    return e1.CreateRelation(name, e2, type, side, c1, c2, this, node1, node2, distance);
 }
 
 RelationEntity *Model::CreateRelationById(std::string name, long id1, long id2,
-                                          Enums::RelationTypes type, Enums::RelationSite site,
-                                          Enums::Cardinalities c1, Enums::Cardinalities c2)
+                                          Enums::RelationTypes type, Enums::RelationSide side,
+                                          Enums::Cardinalities c1, Enums::Cardinalities c2,
+                                          int node1, int node2, int distance)
 {
     auto ent1 = GetEntityById(id1);
     auto ent2 = GetEntityById(id2);
 
-    return CreateRelation(name, *ent1, *ent2, type, site, c1, c2);
+    return CreateRelation(name, *ent1, *ent2, type, side, c1, c2, node1, node2, distance);
 }
 
 DiagramEntity *Model::GetEntityById(long Id)

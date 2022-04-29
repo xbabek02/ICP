@@ -1,8 +1,11 @@
 QT       += core gui
+QT += xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++11
+TEMPLATE = app
+TARGET = ProjektICP
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -19,8 +22,10 @@ SOURCES += \
     Entities/DiagramEntity.cpp \
     Entities/Model.cpp \
     Entities/ModelObject.cpp \
-    Entities/RelationEntity.cpp \
-    IO/ioxmlparsing.cpp
+    IO/ioxmlparsing.cpp \
+    Common/enums.cpp \
+    Entities/RelationEntity.cpp
+
 
 HEADERS += \
     View/classdiagramitem.h \
@@ -32,9 +37,8 @@ HEADERS += \
     Entities/DiagramEntity.h \
     Entities/Model.h \
     Entities/ModelObject.h \
-    Entities/RelationEntity.h \
-    Common/enums.h \ 
-    IO/ioxmlparsing.h
+    Common/enums.h \    
+    Entities/RelationEntity.h
 
 FORMS += \
     View/mainwindow.ui

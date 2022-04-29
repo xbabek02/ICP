@@ -4,12 +4,12 @@
 #include <iostream>
 #include <algorithm>
 
-#include "RelationEntity.h"
+#include "RelationEntity2.h"
 #include "DiagramEntity.h"
 #include "../Common/enums.h"
 #include "AttributeEntity.h"
 
-long DiagramEntity::ID_generator = 0;
+int DiagramEntity::ID_generator = 1;
 
 DiagramEntity::DiagramEntity(std::string name) : ID(ID_generator), name(name)
 {
@@ -92,13 +92,14 @@ RelationEntity *DiagramEntity::CreateRelation(DiagramEntity &entity, Model *m)
 }
 
 RelationEntity *DiagramEntity::CreateRelation(std::string name, DiagramEntity &entity,
-                                              Enums::RelationTypes type, Enums::RelationSite site,
-                                              Enums::Cardinalities cardinality1, Enums::Cardinalities cardinality2, Model *m)
+                                              Enums::RelationTypes type, Enums::RelationSide site,
+                                              Enums::Cardinalities cardinality1, Enums::Cardinalities cardinality2, Model *m,
+                                              int node1, int node2, int distance)
 {
     RelationEntity *relation;
     try
     {
-        relation = new RelationEntity(name, this, &entity, type, site, cardinality1, cardinality2);
+        relation = new RelationEntity(name, this, &entity, type, site, cardinality1, cardinality2, node1, node2, distance);
     }
     catch (std::bad_alloc &e)
     {
@@ -133,7 +134,7 @@ std::string DiagramEntity::GetName()
     return this->name;
 }
 
-long DiagramEntity::GetId()
+int DiagramEntity::GetId()
 {
     return this->ID;
 }
@@ -159,6 +160,14 @@ bool DiagramEntity::operator!=(DiagramEntity &other)
         return false;
     }
     return true;
+}
+
+AttributeEntity*DiagramEntity::GetAttribAt(std::size_t index){
+    return this->attributes.at(index);
+}
+
+std::size_t DiagramEntity::AttribCount(){
+    return this->attributes.size();
 }
 
 DiagramEntity::~DiagramEntity()

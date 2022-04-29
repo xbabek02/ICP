@@ -5,43 +5,69 @@
 #include "DiagramEntity.h"
 #include "../Common/enums.h"
 
+
 class DiagramEntity;
 
+
+/**
+ * @brief The RelationEntity class
+ * Stores data for relations
+ */
 class RelationEntity
 {
 private:
-    static long ID_generator;
-    long ID;
+    static int ID_generator;
+    int ID;
     std::string relation_name;
+
 
     DiagramEntity *first, *second, *relation_diagramEntity;
 
     Enums::Cardinalities cardinality1, cardinality2;
 
     Enums::RelationTypes type;
-    Enums::RelationSite site;
+    Enums::RelationSide side;
+
+    int node1, node2;
+    int distance = 0; //used only for relation between the same class
 
     std::pair<DiagramEntity *, DiagramEntity *> enitites;
+    std::pair<Enums::Cardinalities, Enums::Cardinalities> cardinalities;
 
 public:
     RelationEntity(std::string, DiagramEntity *, DiagramEntity *,
-                   Enums::RelationTypes, Enums::RelationSite,
-                   Enums::Cardinalities, Enums::Cardinalities); // for creating from file
+                   Enums::RelationTypes, Enums::RelationSide,
+                   Enums::Cardinalities, Enums::Cardinalities,
+                   int node1, int node2, int distance); // for creating from file
     RelationEntity(DiagramEntity *, DiagramEntity *);           // for creating by user
 
     bool inline HasRelationEntity();
     void AddRelationEntity();
-    inline void AddRelationEntity(DiagramEntity *);
+    void AddRelationEntity(DiagramEntity *);
 
-    long GetId();
+    int GetId();
     std::string GetName();
     bool SetName(std::string);
     std::pair<DiagramEntity *, DiagramEntity *> &GetEntites();
 
-    inline void ChangeCardinality1(Enums::Cardinalities);
-    inline void ChangeCardinality2(Enums::Cardinalities);
+    void ChangeCardinality1(Enums::Cardinalities);
+    void ChangeCardinality2(Enums::Cardinalities);
+    std::pair<Enums::Cardinalities, Enums::Cardinalities> GetCardinalities();
 
-    inline void SwitchRelationSite();
+
+    int GetNode1();
+    int GetNode2();
+    int GetDistance();
+
+    void ChangeNode1(int);
+    void ChangeNode2(int);
+    void ChangeDistance(int);
+
+    void SwitchRelationSide();
+    Enums::RelationSide GetSide();
+
+    void SetRelationType(Enums::RelationTypes);
+    Enums::RelationTypes GetType();
 
     bool operator==(RelationEntity &other);
     bool operator!=(RelationEntity &other);

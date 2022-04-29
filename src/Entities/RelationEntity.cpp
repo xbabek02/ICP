@@ -5,15 +5,17 @@
 #include <iostream>
 #include <string>
 
-long RelationEntity::ID_generator = 0;
+int RelationEntity::ID_generator = 1;
 
 RelationEntity::RelationEntity(std::string name, DiagramEntity *first, DiagramEntity *second,
-                               Enums::RelationTypes type, Enums::RelationSite site,
-                               Enums::Cardinalities c1, Enums::Cardinalities c2)
+                               Enums::RelationTypes type, Enums::RelationSide side,
+                               Enums::Cardinalities c1, Enums::Cardinalities c2,
+                               int node1, int node2, int distance)
     : ID(ID_generator++), relation_name(name), first(first), second(second), relation_diagramEntity(nullptr),
-       cardinality1(c1), cardinality2(c2), type(type), site(site)
+       cardinality1(c1), cardinality2(c2), type(type), side(side), node1(node1), node2(node2), distance(distance)
 {\
     enitites = std::make_pair(first, second);
+    cardinalities = std::make_pair(cardinality1, cardinality2);
 }
 
 RelationEntity::RelationEntity(DiagramEntity *first, DiagramEntity *second)
@@ -21,19 +23,33 @@ RelationEntity::RelationEntity(DiagramEntity *first, DiagramEntity *second)
       first(first), second(second),
       relation_diagramEntity(nullptr),
       cardinality1(Enums::Cardinalities::one), cardinality2(Enums::Cardinalities::one),
-      type(Enums::RelationTypes::asociation), site(Enums::RelationSite::first)
+      type(Enums::RelationTypes::asociation), side(Enums::RelationSide::first),
+      node1(0), node2(0)
 
 {
     enitites = std::make_pair(first, second);
+    cardinalities = std::make_pair(cardinality1, cardinality2);
     ID_generator++;
 }
 
-inline void RelationEntity::SwitchRelationSite()
+void RelationEntity::SwitchRelationSide()
 {
-    site = (site == Enums::RelationSite::first) ? Enums::RelationSite::second : Enums::RelationSite::first;
+    side = (side == Enums::RelationSide::first) ? Enums::RelationSide::second : Enums::RelationSide::first;
 }
 
-inline void RelationEntity::AddRelationEntity(DiagramEntity *relationEntity)
+Enums::RelationSide RelationEntity::GetSide(){
+    return this->side;
+}
+
+Enums::RelationTypes RelationEntity::GetType(){
+    return this->type;
+}
+
+void RelationEntity::SetRelationType(Enums::RelationTypes type){
+    this->type = type;
+}
+
+void RelationEntity::AddRelationEntity(DiagramEntity *relationEntity)
 {
     if (this->HasRelationEntity())
     {
@@ -65,19 +81,47 @@ void RelationEntity::AddRelationEntity()
     }
 }
 
-inline void RelationEntity::ChangeCardinality1(Enums::Cardinalities arg)
+void RelationEntity::ChangeCardinality1(Enums::Cardinalities arg)
 {
     this->cardinality1 = arg;
 }
 
-inline void RelationEntity::ChangeCardinality2(Enums::Cardinalities arg)
+void RelationEntity::ChangeCardinality2(Enums::Cardinalities arg)
 {
     this->cardinality2 = arg;
 }
 
-long RelationEntity::GetId()
+int RelationEntity::GetNode1(){
+    return this->node1;
+}
+
+int RelationEntity::GetNode2(){
+    return this->node2;
+}
+
+int RelationEntity::GetDistance(){
+    return this->distance;
+}
+
+void RelationEntity::ChangeNode1(int node){
+    this->node1 = node;
+}
+
+void RelationEntity::ChangeNode2(int node){
+    this->node2 = node;
+}
+
+void RelationEntity::ChangeDistance(int distance){
+    this->distance = distance;
+}
+
+int RelationEntity::GetId()
 {
     return this->ID;
+}
+
+std::pair<Enums::Cardinalities, Enums::Cardinalities> RelationEntity::GetCardinalities(){
+    return this->cardinalities;
 }
 
 std::string RelationEntity::GetName()

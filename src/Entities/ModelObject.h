@@ -1,6 +1,11 @@
 #ifndef __MODEL_OBJECT_H
 #define __MODEL_OBJECT_H
 
+
+/**
+ * @brief The ModelObject class
+ * Has responsibility of positioning of elements
+ */
 class ModelObject
 {
 private:
@@ -9,6 +14,8 @@ private:
 
 public:
     void ChangePosition(int, int);
+    int GetPosX();
+    int GetPosY();
 };
 
 #endif

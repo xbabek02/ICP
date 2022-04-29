@@ -13,11 +13,17 @@
 class RelationEntity;
 class Model;
 
+
+/**
+ * @brief The DiagramEntity class
+ * Represents stored data of relation entities
+ * Data stored are used for both class diagram and sequence diagram entities
+ */
 class DiagramEntity : public ModelObject
 {
 private:
-    const long ID;
-    static long ID_generator;
+    const int ID;
+    static int ID_generator;
 
     std::string name;
     std::vector<AttributeEntity *> attributes;
@@ -28,6 +34,8 @@ public:
     explicit DiagramEntity(std::string);
 
     void AddAttrib(Enums::Attrib_type, std::string);
+    AttributeEntity*GetAttribAt(std::size_t index);
+    std::size_t AttribCount();
     inline void UpdateAttribAt(std::size_t, std::string new_data);
     inline void SwitchAttribTypeAt(std::size_t);
     void RemoveAttribLast();
@@ -35,12 +43,13 @@ public:
 
     std::string GetName();
     void SetName(std::string);
-    long GetId();
+    int GetId();
 
     RelationEntity *CreateRelation(DiagramEntity &, Model *); // for use by user
     RelationEntity *CreateRelation(std::string, DiagramEntity &,
-                                   Enums::RelationTypes, Enums::RelationSite,
-                                   Enums::Cardinalities, Enums::Cardinalities, Model *); // for use from file
+                                   Enums::RelationTypes, Enums::RelationSide,
+                                   Enums::Cardinalities, Enums::Cardinalities, Model *,
+                                   int node1, int node2, int distance); // for use from file
     bool RemoveRelationFromVector(RelationEntity *);
 
     bool operator==(DiagramEntity &);

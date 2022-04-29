@@ -10,6 +10,11 @@
 class RelationEntity;
 class DiagramEntity;
 
+/**
+ * @brief The Model class
+ * Implements data storage model for the application
+ * Relations and Entities can be created within given model through implemented methods
+ */
 class Model
 {
 private:
@@ -29,22 +34,25 @@ public:
 
     RelationEntity *CreateRelation(DiagramEntity &, DiagramEntity &); // for use by user
     RelationEntity *CreateRelation(std::string, DiagramEntity &, DiagramEntity &,
-                                   Enums::RelationTypes, Enums::RelationSite,
-                                   Enums::Cardinalities, Enums::Cardinalities); // for use from file
+                                   Enums::RelationTypes, Enums::RelationSide,
+                                   Enums::Cardinalities, Enums::Cardinalities,
+                                   int node1, int node2, int distance); // for use from file
 
     RelationEntity *CreateRelationById(std::string, long id1, long id2,
-                                       Enums::RelationTypes, Enums::RelationSite,
-                                       Enums::Cardinalities, Enums::Cardinalities); // for use from file
+                                       Enums::RelationTypes, Enums::RelationSide,
+                                       Enums::Cardinalities, Enums::Cardinalities,
+                                       int node1, int node2, int distance); // for use from file
 
     void DeleteEntity(DiagramEntity *);
     bool DeleteEntityById(long Id);
 
     void DeleteRelation(RelationEntity *);
     bool DeleteRelationById(long Id);
-
     RelationEntity *GetRelationById(long Id);
-
     void PushRelation(RelationEntity *);
+
+    void SaveToFile(const char*);
+    bool LoadFromFile(const char*);
 
     Model();
     ~Model();
