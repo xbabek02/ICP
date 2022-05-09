@@ -1,3 +1,13 @@
+/**
+ * @file seqdscene.h
+ * @author Radomír Bábek, Martin Ohnút (xbabek02, xohnut01)
+ * @version 0.1
+ * @date 2022-05-09
+ *
+ * @copyright Copyright (c) 2022
+ *
+ */
+
 #include "classdiagramitem.h"
 
 #define DEFAULT_WIDTH 150
@@ -134,7 +144,6 @@ void ClassDiagramItem::AddRow(QString textValue, QColor color)
     access->FillAccess();
     access->setPos(0, 5 + 30 * numberOfRows);
 
-    qDebug() << "ee";
 
     connect(text, SIGNAL(valueChanged(QString,int)), this, SLOT(RowChanged(QString,int)));
     connect(access, SIGNAL(stateChange(int)), this, SLOT(AccessUpdate(int)));

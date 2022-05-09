@@ -1,3 +1,13 @@
+/**
+ * @file seqdscene.h
+ * @author Radomír Bábek, Martin Ohnút (xbabek02, xohnut01)
+ * @version 0.1
+ * @date 2022-05-09
+ *
+ * @copyright Copyright (c) 2022
+ *
+ */
+
 #include "sequencemodel.h"
 #include "../../Common/enums.h"
 #include "../../ClassDiagramCommands/createclasscommand.h"
@@ -300,17 +310,7 @@ void SequenceModel::Clear()
     instancesIdMap.clear();
 }
 
-void SequenceModel::ConsistencyCheck()
-{
-    for (auto instance : instanceEntities)
-    {
-        for (auto block : instance->GetBlocks())
-        {
-        }
-    }
-}
-
-void SequenceModel::SaveIntoFile(const char *path)
+void SequenceModel::SaveIntoFile(const char*path)
 {
     QFile xmlFile(path);
     if (!xmlFile.open(QFile::WriteOnly | QFile::Text))
@@ -492,8 +492,6 @@ int SequenceModel::LoadFromFile(const char *path, Model *model, QList<ClassDiagr
                     block->SetOriginMessageID(origin_message_id.toInt());
                 else
                     block->SetOriginMessageID(0);
-
-                qDebug() << block->GetOriginMessageID();
 
                 subnode = subnode.nextSibling().toElement();
             }
