@@ -88,11 +88,16 @@ void MainWindow::CreateSequence()
     SequenceModel *sequenceModel = new SequenceModel(mainModel);
     SequenceDiagramWindow *sequenceDiagram = new SequenceDiagramWindow(sequenceModel, this);
     sequenceDiagram->show();
+    sequenceDiagrams.append(sequenceDiagram);
 }
 
 void MainWindow::SaveFileButton()
 {
     QString file = QFileDialog::getSaveFileName();
+
+    if(file.compare("") == 0)
+        return;
+
     mainModel->SaveToFile(file.toStdString().c_str());
 }
 
@@ -120,6 +125,9 @@ void MainWindow::OpenFileButton()
     connections.clear();
     singletons.clear();
 
+
+    undoStack->clear();
+
     for(auto entity : mainModel->GetEntities())
     {
         auto *item = new ClassDiagramItem(scene, entity);
@@ -140,6 +148,38 @@ void MainWindow::OpenFileButton()
             auto *item = new Connection(scene, relation);
             connections.append(item);
         }
+    }
+
+}
+/*
+ *
+    for(auto entity : mainModel->GetEntities())
+    {
+        auto command = new CreateClassCommand(mainModel, &items, scene, entity);
+        undoStack->push(command);
+        items.last()->SetUndoStack(undoStack);
+    }
+
+    for(auto relation : mainModel->GetRelations())
+    {
+        if(relation->GetEntites().first == relation->GetEntites().second)
+        {
+            auto *item = new SingletonConnection(relation->GetEntites().first->GetView(),relation->GetEntites().first->GetView()->GetNode(relation->GetNode1()),
+                                                 relation->GetEntites().first->GetView()->GetNode(relation->GetNode2()),relation);
+            singletons.append(item);
+        }
+        else
+        {
+            auto *item = new Connection(scene, relation);
+            connections.append(item);
+        }
+    }*/
+
+void MainWindow::RefreshSequenceDiagrams()
+{
+    for(auto diagram : sequenceDiagrams)
+    {
+        diagram->RefreshModel();
     }
 }
 
@@ -251,9 +291,17 @@ void MainWindow::DeleteNodeButton()
                 count++;
                 continue;
             }
-            QList<Connection*> relationView = item->GetRelationViewItems();
-            for(auto relation : relationView)
-                delete relation;
+
+            std::vector<RelationEntity*> relations = item->GetModel()->GetRelations();
+            for(auto relation : relations)
+            {
+                if(relation->GetEntites().first == relation->GetEntites().second)
+                    delete relation->GetSingletonViewItem();
+                else
+                    delete relation->GetViewItem();
+                mainModel->DeleteRelationById(relation->GetId());
+            }
+
             mainModel->DeleteEntityById(item->GetModel()->GetId());
             items.removeAt(count);
             emit itemsChanged();
@@ -266,21 +314,23 @@ void MainWindow::DeleteNodeButton()
                 count++;
                 continue;
             }
-            delete connection->GetModel();
+            mainModel->DeleteRelationById(connection->GetModel()->GetId());
             delete connection;
-            items.removeAt(count);
+            connections.removeAt(count);
         }
         count = 0;
         for(auto singleton : singletons)
         {
+            if(singleton == nullptr)
+                continue;
             if(singleton->GetMainLine() != selected)
             {
                 count++;
                 continue;
             }
-            delete singleton->GetModel();
+            mainModel->DeleteRelationById(singleton->GetModel()->GetId());
             delete singleton;
-            items.removeAt(count);
+            singletons.removeAt(count);
         }
     }
     undoStack->clear();

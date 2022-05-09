@@ -11,7 +11,7 @@
 class CreateClassCommand : public QUndoCommand
 {
 public:
-    CreateClassCommand(Model *mainModel, QList<ClassDiagramItem*> *items, QGraphicsScene *scene, QUndoCommand *parent = nullptr);
+    CreateClassCommand(Model *mainModel, QList<ClassDiagramItem*> *items, QGraphicsScene *scene, DiagramEntity *entity = nullptr, QUndoCommand *parent = nullptr);
     void undo() override;
     void redo() override;
 

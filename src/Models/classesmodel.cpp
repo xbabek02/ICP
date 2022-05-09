@@ -6,7 +6,7 @@
 ClassesModel::ClassesModel(Model*m, QObject *parent)
     : QAbstractListModel(parent), m(m)
 {
-    loadData();
+
 }
 
 int ClassesModel::rowCount(const QModelIndex &parent) const

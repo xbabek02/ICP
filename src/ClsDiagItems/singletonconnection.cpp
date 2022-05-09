@@ -21,6 +21,7 @@ SingletonConnection::SingletonConnection(ClassDiagramItem *item, QGraphicsEllips
     Draw();
     DrawSymbol(false);
     DrawArrow(false);
+    DrawText(false);
     PutCardinalities(false);
     cardinality1->SetState(entityModel->GetCardinalities().first);
     cardinality2->SetState(entityModel->GetCardinalities().second);
@@ -29,8 +30,9 @@ SingletonConnection::SingletonConnection(ClassDiagramItem *item, QGraphicsEllips
     currentState--;
     ChangeState();
     connect(item, SIGNAL(rowChangeSignal()), this, SLOT(Update()));
-    connect(cardinality1, SIGNAL(stateChange(int)), this, SLOT(CardinalityUpdate()));
-    connect(cardinality2, SIGNAL(stateChange(int)), this, SLOT(CardinalityUpdate()));
+    connect(cardinality1, SIGNAL(stateChange(int)), this, SLOT(ModelUpdate()));
+    connect(cardinality2, SIGNAL(stateChange(int)), this, SLOT(ModelUpdate()));
+    connect(text, SIGNAL(valueChanged(QString, int)), this, SLOT(ModelUpdate()));
 }
 
 void SingletonConnection::Delete()
@@ -111,6 +113,17 @@ void SingletonConnection::Draw()
         line->setFlag(QGraphicsItem::ItemIsSelectable);
         connect(line, SIGNAL(selectChange(bool)), this, SLOT(Select(bool)));
     }
+}
+
+void SingletonConnection::DrawText(bool update)
+{
+    if(update == false)
+    {
+        text = new TextItem(item->GetMainBody());
+        text->setPlainText(QString::fromStdString(entityModel->GetName()));
+    }
+    QPointF newpos = GetLineMidPoint(lines[2], 2);
+    text->setPos(newpos.x(), newpos.y());
 }
 
 QList<SelectLine*> SingletonConnection::HorizontalLine()
@@ -292,6 +305,7 @@ void SingletonConnection::ChangeNodes()
 
 void SingletonConnection::Select(bool selected)
 {
+    qDebug() << lines.count() << "hovna";
     for(auto line : lines)
     {
         line->SetSelectChain();
@@ -306,6 +320,7 @@ void SingletonConnection::Update()
     DrawSymbol(true);
     DrawArrow(true);
     PutCardinalities(true);
+    DrawText(true);
 }
 
 void SingletonConnection::DrawArrow(bool update)
@@ -340,7 +355,7 @@ void SingletonConnection::ChangeState()
             arrow1->setVisible(false);
             arrow2->setVisible(false);
             symbol->setVisible(true);
-            //name->setVisible(true);
+            text->setVisible(true);
             cardinality1->setVisible(true);
             cardinality2->setVisible(true);
             symbol->setBrush(QBrush{Qt::white});
@@ -350,7 +365,7 @@ void SingletonConnection::ChangeState()
             arrow1->setVisible(false);
             arrow2->setVisible(false);
             symbol->setVisible(true);
-            //name->setVisible(true);
+            text->setVisible(true);
             cardinality1->setVisible(true);
             cardinality2->setVisible(true);
             symbol->setBrush(QBrush{Qt::black});
@@ -360,7 +375,7 @@ void SingletonConnection::ChangeState()
             arrow1->setVisible(false);
             arrow2->setVisible(false);
             symbol->setVisible(false);
-            //name->setVisible(true);
+            text->setVisible(true);
             cardinality1->setVisible(true);
             cardinality2->setVisible(true);
             entityModel->SetRelationType(Enums::agregation);
@@ -368,13 +383,20 @@ void SingletonConnection::ChangeState()
         case 3:
             arrow1->setVisible(true);
             arrow2->setVisible(true);
-           // name->setVisible(false);
+            text->setVisible(false);
             symbol->setVisible(false);
             cardinality1->setVisible(false);
             cardinality2->setVisible(false);
             entityModel->SetRelationType(Enums::generalisation);
             break;
     }
+}
+
+void SingletonConnection::ModelUpdate()
+{
+    entityModel->ChangeCardinality1(static_cast<Enums::Cardinalities>(cardinality1->GetState()));
+    entityModel->ChangeCardinality2(static_cast<Enums::Cardinalities>(cardinality2->GetState()));
+    entityModel->SetName(text->toPlainText().toStdString());
 }
 
 void SingletonConnection::CardinalityUpdate()
@@ -401,6 +423,7 @@ SingletonConnection::~SingletonConnection()
     }
     delete cardinality1;
     delete cardinality2;
+    delete text;
     delete symbol;
     delete arrow1;
     delete arrow2;

@@ -61,6 +61,7 @@ public:
     void SetThisViewItem(Connection *thisViewItem);
 
     void SetSingletonViewItem(SingletonConnection *thisViewItem);
+    SingletonConnection *GetSingletonViewItem();
 
     int GetNode1();
     int GetNode2();

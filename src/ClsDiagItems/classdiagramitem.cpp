@@ -32,7 +32,6 @@ ClassDiagramItem::ClassDiagramItem(QGraphicsScene *scene, DiagramEntity *entityM
 
     positionHistory.append(GetMainBody()->pos());
     Check();
-
 }
 
 ClassItemHead *ClassDiagramItem::GetMainBody()
@@ -322,6 +321,11 @@ void ClassDiagramItem::RowChanged(QString value, int id)
         rows[id]->setBrush(QBrush{Qt::lightGray});
     else
         rows[id]->setBrush(QBrush{Qt::gray});
+}
+
+QList<SingletonConnection*> ClassDiagramItem::GetSingletonViewItems()
+{
+    return entityModel->GetSingletonViewItems();
 }
 
 void ClassDiagramItem::Check()
