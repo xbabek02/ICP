@@ -1,3 +1,14 @@
+/**
+ * @file userinstance.cpp
+ * @author Radomír Bábek, Martin Ohnút (xbabek02, xohnut01)
+ * @brief Special user instance, one for each sequence diagram
+ * @version 0.1
+ * @date 2022-05-09
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
+
 #include "userinstance.h"
 #include <QPainter>
 #include <QImage>
@@ -19,15 +30,15 @@ void UserInstance::paint(QPainter *painter, const QStyleOptionGraphicsItem *opti
     /* set the modified font to the painter */
     painter->setFont(font);
 
+    //text underline
     painter->drawLine(default_x, default_y+70, default_x + width, default_y+70);
 
-
     painter->drawText(QRectF(default_x, default_y, width, 50),Qt::AlignCenter, text_class);
+
+    //line of instance
     painter->drawLine(default_x+ width /2, default_y + 70, default_x + width / 2, default_y + length);
 
     painter->drawImage(QRect(default_x+10, default_y, 60, 60), QImage("../user.png"));
-
-    //QGraphicsItem::paint(painter, option, widget);
 }
 
 QRectF UserInstance::boundingRect() const {

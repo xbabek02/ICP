@@ -1,3 +1,14 @@
+/**
+ * @file RelationEntity.h
+ * @author Radomír Bábek, Martin Ohnút (xbabek02, xohnut01)
+ * @brief Storage entity for relation data
+ * @version 0.1
+ * @date 2022-05-09
+ *
+ * @copyright Copyright (c) 2022
+ *
+ */
+
 #ifndef __RELATION_ENTITY__
 #define __RELATION_ENTITY__
 
@@ -33,7 +44,7 @@ private:
     Enums::RelationSide side;
 
     int node1, node2;
-    int distance = 0; //used only for relation between the same class
+    int distance = 0; // used only for relation between the same class
 
     std::pair<DiagramEntity *, DiagramEntity *> enitites;
     std::pair<Enums::Cardinalities, Enums::Cardinalities> cardinalities;
@@ -43,7 +54,7 @@ public:
                    Enums::RelationTypes, Enums::RelationSide,
                    Enums::Cardinalities, Enums::Cardinalities,
                    int node1, int node2, int distance); // for creating from file
-    RelationEntity(DiagramEntity *, DiagramEntity *);           // for creating by user
+    RelationEntity(DiagramEntity *, DiagramEntity *);   // for creating by user
 
     bool inline HasRelationEntity();
     void AddRelationEntity();

@@ -1,3 +1,14 @@
+/**
+ * @file textitem_instance.h
+ * @author Radomír Bábek, Martin Ohnút (xbabek02, xohnut01)
+* @brief Text field of instance to be edited/editable
+ * @version 0.1
+ * @date 2022-05-09
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
+
 #ifndef TEXTITEM_INSTANCE_H
 #define TEXTITEM_INSTANCE_H
 

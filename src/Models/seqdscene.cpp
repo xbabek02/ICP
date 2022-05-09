@@ -1,3 +1,15 @@
+/**
+ * @file seqdscene.cpp
+ * @author Radomír Bábek, Martin Ohnút (xbabek02, xohnut01)
+ * @brief Custom QGraphicsScene, takes responsibility of click and key press events
+ * @version 0.1
+ * @date 2022-05-09
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
+
+
 #include "seqdscene.h"
 #include <QGraphicsScene>
 #include <QDebug>

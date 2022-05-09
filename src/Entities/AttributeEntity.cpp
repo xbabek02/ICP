@@ -1,3 +1,13 @@
+/**
+ * @file AttributeEntity.cpp
+ * @author Radomír Bábek, Martin Ohnút (xbabek02, xohnut01)
+ * @version 0.1
+ * @date 2022-05-09
+ *
+ * @copyright Copyright (c) 2022
+ *
+ */
+
 #include "AttributeEntity.h"
 #include "../Common/enums.h"
 #include <string>
@@ -12,11 +22,13 @@ void AttributeEntity::SetData(std::string data)
     this->data = data;
 }
 
-Enums::Attrib_type AttributeEntity::GetType(){
+Enums::Attrib_type AttributeEntity::GetType()
+{
     return this->type;
 }
 
-std::string AttributeEntity::GetData(){
+std::string AttributeEntity::GetData()
+{
     return this->data;
 }
 
@@ -37,12 +49,12 @@ Enums::AccessModifiers AttributeEntity::GetAccess()
 bool AttributeEntity::IsOK()
 {
     int count = 0;
-    for(auto c : data)
+    for (auto c : data)
     {
-        if(c == ' ')
+        if (c == ' ')
             count++;
     }
-    if(count != 1 || data[0] == ' ' || data[data.length() - 1] == ' ')
+    if (count != 1 || data[0] == ' ' || data[data.length() - 1] == ' ')
         return false;
     return true;
 }
@@ -51,16 +63,16 @@ bool AttributeEntity::IsMethod()
 {
     std::string brackets = "";
     int brackets_found = 0;
-    for(auto c : data)
+    for (auto c : data)
     {
-        if((c == ')' && brackets_found == 0) || (c == '(' && brackets_found == 1))
+        if ((c == ')' && brackets_found == 0) || (c == '(' && brackets_found == 1))
             break;
-        if(c == '(' || c == ')')
+        if (c == '(' || c == ')')
             brackets_found++;
-        if(brackets_found == 1 && c != ')')
-                brackets = brackets + c;
+        if (brackets_found == 1 && c != ')')
+            brackets = brackets + c;
     }
-    if(data[data.length() - 1] != ')' || brackets_found != 2)
+    if (data[data.length() - 1] != ')' || brackets_found != 2)
         return false;
     return true;
 }

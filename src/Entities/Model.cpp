@@ -1,3 +1,14 @@
+/**
+ * @file Model.cpp
+ * @author Radomír Bábek, Martin Ohnút (xbabek02, xohnut01)
+ * @brief Definitions of data model for class diagram
+ * @version 0.1
+ * @date 2022-05-09
+ *
+ * @copyright Copyright (c) 2022
+ *
+ */
+
 #include "DiagramEntity.h"
 #include "RelationEntity.h"
 #include "Model.h"
@@ -7,6 +18,7 @@
 #include <iostream>
 #include <algorithm>
 
+// setting the statics of the class
 int Model::default_pos_x = 0;
 int Model::default_pos_y = 0;
 
@@ -138,12 +150,12 @@ RelationEntity *Model::GetRelationById(long Id)
     return nullptr;
 }
 
-std::vector<DiagramEntity*> &Model::GetEntities()
+std::vector<DiagramEntity *> &Model::GetEntities()
 {
     return entities;
 }
 
-std::vector<RelationEntity*> Model::GetRelations()
+std::vector<RelationEntity *> Model::GetRelations()
 {
     return relations;
 }
@@ -166,8 +178,10 @@ QGraphicsScene *Model::GetScene()
 
 AttributeEntity *Model::GetAttributeEntityByName(DiagramEntity *de, std::string name)
 {
-    for (std::size_t i = 0; i < de->AttribCount(); i++){
-        if (de->GetAttributeName(i) == name){
+    for (std::size_t i = 0; i < de->AttribCount(); i++)
+    {
+        if (de->GetAttributeName(i) == name)
+        {
             return de->GetAttribAt(i);
         }
     }
@@ -186,6 +200,7 @@ QUndoStack *Model::GetUndoStack()
 
 Model::~Model()
 {
+    // cascade deletes, calls DiagramEntity destructor
     for (auto entity : this->entities)
     {
         delete entity;

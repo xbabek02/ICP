@@ -1,0 +1,6 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory '/mnt/d/repos/ICP'
+make: Leaving directory '/mnt/d/repos/ICP'
+ 
+make: *** No targets specified and no makefile found.  Stop.
+

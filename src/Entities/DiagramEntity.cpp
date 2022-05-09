@@ -1,15 +1,26 @@
+/**
+ * @file DiagramEntity.cpp
+ * @author Radomír Bábek, Martin Ohnút (xbabek02, xohnut01)
+ * @brief Class diagram storage entity, is a substitution of database
+ * @version 0.1
+ * @date 2022-05-09
+ *
+ * @copyright Copyright (c) 2022
+ *
+ */
+
 #include <vector>
 #include <string>
 #include <new>
 #include <iostream>
 #include <algorithm>
 
-#include "RelationEntity2.h"
 #include "DiagramEntity.h"
 #include "../Common/enums.h"
 #include "AttributeEntity.h"
 #include "../ClsDiagItems/connection.h"
 
+// setting the statics of the class
 int DiagramEntity::ID_generator = 1;
 
 DiagramEntity::DiagramEntity(std::string name) : ID(ID_generator), name(name)
@@ -27,12 +38,12 @@ void DiagramEntity::ChangePosition(int pos_x, int pos_y)
     ModelObject::ChangePosition(pos_x, pos_y);
 }
 
-QList<AttributeEntity*> DiagramEntity::GetMethods()
+QList<AttributeEntity *> DiagramEntity::GetMethods()
 {
-    QList<AttributeEntity*> methods;
-    for(auto attribute : attributes)
+    QList<AttributeEntity *> methods;
+    for (auto attribute : attributes)
     {
-        if(attribute->IsMethod() && attribute->IsOK())
+        if (attribute->IsMethod() && attribute->IsOK())
             methods.append(attribute);
     }
     return methods;
@@ -40,9 +51,9 @@ QList<AttributeEntity*> DiagramEntity::GetMethods()
 
 AttributeEntity *DiagramEntity::FindAttributeByData(QString data)
 {
-    for(auto attribute : attributes)
+    for (auto attribute : attributes)
     {
-        if(QString::fromStdString(attribute->GetData()) == data)
+        if (QString::fromStdString(attribute->GetData()) == data)
             return attribute;
     }
     return nullptr;
@@ -55,11 +66,11 @@ void DiagramEntity::AddSeqDiagramInstace(InstanceEntity *instace)
 
 void DiagramEntity::RemoveSeqDiagramInstace(InstanceEntity *instace)
 {
-    if(seqDiagramInstances.empty() == true)
+    if (seqDiagramInstances.empty() == true)
         return;
-    for(int i {0}; i < seqDiagramInstances.count(); i++)
+    for (int i{0}; i < seqDiagramInstances.count(); i++)
     {
-        if(seqDiagramInstances[i] == instace)
+        if (seqDiagramInstances[i] == instace)
         {
             seqDiagramInstances.removeAt(i);
         }
@@ -71,7 +82,7 @@ void DiagramEntity::SetDiagramItem(ClassDiagramItem *item)
     this->thisDiagramItem = item;
 }
 
-QList<InstanceEntity*> DiagramEntity::GetSeqDiagramInstances()
+QList<InstanceEntity *> DiagramEntity::GetSeqDiagramInstances()
 {
     return seqDiagramInstances;
 }
@@ -237,7 +248,8 @@ bool DiagramEntity::operator!=(DiagramEntity &other)
     return true;
 }
 
-AttributeEntity*DiagramEntity::GetAttribAt(std::size_t index){
+AttributeEntity *DiagramEntity::GetAttribAt(std::size_t index)
+{
     return this->attributes.at(index);
 }
 
@@ -246,7 +258,8 @@ std::string DiagramEntity::GetAttributeName(int index)
     return this->attributes.at(index)->GetData();
 }
 
-std::size_t DiagramEntity::AttribCount(){
+std::size_t DiagramEntity::AttribCount()
+{
     return this->attributes.size();
 }
 
@@ -255,9 +268,9 @@ std::vector<RelationEntity *> DiagramEntity::GetRelations()
     return relations;
 }
 
-QList<Connection*> DiagramEntity::GetRelationViewItems()
+QList<Connection *> DiagramEntity::GetRelationViewItems()
 {
-    QList<Connection*> connections;
+    QList<Connection *> connections;
     for (auto relation : this->relations)
     {
         connections.append(relation->GetViewItem());
@@ -269,7 +282,6 @@ ClassDiagramItem *DiagramEntity::GetView()
 {
     return thisDiagramItem;
 }
-
 
 DiagramEntity::~DiagramEntity()
 {
@@ -291,15 +303,14 @@ DiagramEntity::~DiagramEntity()
         {
             DiagramEntity *second = ((*this == *res.first) ? res.second : res.first);
             auto it = std::remove_if(second->relations.begin(), second->relations.end(),
-                                     [relation](RelationEntity* a)
+                                     [relation](RelationEntity *a)
                                      { return a == relation; });
             second->relations.erase(it, second->relations.end());
             delete relation;
         }
     }
-    if (thisDiagramItem){
+    if (thisDiagramItem)
+    {
         delete thisDiagramItem;
     }
-
 }
-

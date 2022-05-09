@@ -6,7 +6,6 @@
 #include <QRectF>
 #include <QPainterPath>
 #include <QGraphicsSceneMouseEvent>
-#include "instanceline.h"
 #include "userinstance.h"
 
 int InstanceItem::default_y = 0;

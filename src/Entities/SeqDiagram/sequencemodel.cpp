@@ -30,36 +30,40 @@ void SequenceModel::SetInstancesModel(InstancesModel *im)
 
 void SequenceModel::LoadFromAppState()
 {
-    //loading Instances
+    // loading Instances
     instancesIdMap.clear();
     auto instances = instModel->GetDataForReadOnly();
-    for (InstanceItem *item : instances){
-        InstanceEntity* ie = this->CreateInstance(item->text_name, item->scenePos().x(), item->length, item->classEntity);
+    for (InstanceItem *item : instances)
+    {
+        InstanceEntity *ie = this->CreateInstance(item->text_name, item->scenePos().x(), item->length, item->classEntity);
         instancesIdMap.emplace(item->GetID(), ie);
     }
-    if (Rectangle::initial_block){
+    if (Rectangle::initial_block)
+    {
         IterateBlocksRec(Rectangle::initial_block);
     }
-
 }
 
-BlockEntity *SequenceModel::IterateBlocksRec(Rectangle*block)
+BlockEntity *SequenceModel::IterateBlocksRec(Rectangle *block)
 {
     auto b1 = CreateBlock(instancesIdMap.at(block->instance->GetID()), block->vertical_offset, nullptr);
-    instancesIdMap.at(block->instance->GetID())->AddBlock(b1); //adding block to the instance
+    instancesIdMap.at(block->instance->GetID())->AddBlock(b1); // adding block to the instance
     b1->SetHasReturnMessage(block->return_message != nullptr);
     b1->SetAddedLength(block->addedLength);
 
-    for (auto message :block->sent){
-        auto b2 = IterateBlocksRec(message->owner); //recursive call
+    for (auto message : block->sent)
+    {
+        auto b2 = IterateBlocksRec(message->owner); // recursive call
         auto m = CreateMessage(b1, b2, message->owner->GetStartOfBlock());
         m->SetAsync(message->type == Enums::MessageTypes::async);
         m->SetName(message->method_str);
-        if (message->method_str != "<No Method>"){
+        if (message->method_str != "<No Method>")
+        {
             if (message->owner->instance != nullptr)
-            m->SetMethod(mainModel->GetAttributeEntityByName(b2->GetOwner()->GetInstanceClass(), message->method_str.toStdString()));
+                m->SetMethod(mainModel->GetAttributeEntityByName(b2->GetOwner()->GetInstanceClass(), message->method_str.toStdString()));
         }
-        else{
+        else
+        {
             m->SetMethod(nullptr);
         }
 
@@ -68,20 +72,23 @@ BlockEntity *SequenceModel::IterateBlocksRec(Rectangle*block)
     return b1;
 }
 
-void SequenceModel::LoadToAppState(SeqDScene*newscene)
+void SequenceModel::LoadToAppState(SeqDScene *newscene)
 {
-    std::map<InstanceEntity*, InstanceItem*> instanceMap;
-    std::map<int, Rectangle*> rectIdMap;
+    std::map<InstanceEntity *, InstanceItem *> instanceMap;
+    std::map<int, Rectangle *> rectIdMap;
     instModel->ClearData();
 
-    //generating instances
-    for (auto instance : GetInstanceList()){
-        InstanceItem*ii;
-        if (instance->GetInstanceClass()){
+    // generating instances
+    for (auto instance : GetInstanceList())
+    {
+        InstanceItem *ii;
+        if (instance->GetInstanceClass())
+        {
             ii = new InstanceItem(nullptr, instance->GetInstanceClass(), QString::fromStdString(instance->GetInstanceClass()->GetName()));
             ii->text_name = instance->GetName();
         }
-        else {
+        else
+        {
             ii = new UserInstance();
         }
 
@@ -93,9 +100,10 @@ void SequenceModel::LoadToAppState(SeqDScene*newscene)
         ii->visible = instance->GetVisible();
         ii->setVisible(instance->GetVisible());
 
-        //generating blocks for instances
-        for (auto block : instance->GetBlocks()){
-            auto rect_item = new Rectangle(ii,nullptr,block->GetYOffset());
+        // generating blocks for instances
+        for (auto block : instance->GetBlocks())
+        {
+            auto rect_item = new Rectangle(ii, nullptr, block->GetYOffset());
             rect_item->setVisible(instance->GetVisible());
             rect_item->addedLength = block->GetAddedLength();
             rect_item->instance = ii;
@@ -103,11 +111,12 @@ void SequenceModel::LoadToAppState(SeqDScene*newscene)
         }
     }
 
-    //generating messages
-    for (auto messageEnt : GetMessageList()){
+    // generating messages
+    for (auto messageEnt : GetMessageList())
+    {
         Rectangle *owner = rectIdMap.at(messageEnt->GetOwner()->GetID());
         Rectangle *sender = rectIdMap.at(messageEnt->GetSender()->GetID());
-        auto mi = new MessageItem(messageEnt->GetAsync()? Enums::MessageTypes::async : Enums::MessageTypes::sync, sender, messageEnt->GetYCord());
+        auto mi = new MessageItem(messageEnt->GetAsync() ? Enums::MessageTypes::async : Enums::MessageTypes::sync, sender, messageEnt->GetYCord());
         owner->origin = mi;
         sender->sent.append(mi);
         mi->owner = owner;
@@ -116,38 +125,50 @@ void SequenceModel::LoadToAppState(SeqDScene*newscene)
         mi->solid = true;
         int sender_x = sender->instance->scenePos().x();
         int owner_x = owner->instance->scenePos().y();
-        int offset = sender->instance->width/2;
-        offset += sender_x < owner_x ? - Rectangle::width/2 : sender->width/2;
+        int offset = sender->instance->width / 2;
+        offset += sender_x < owner_x ? -Rectangle::width / 2 : sender->width / 2;
         mi->setLine(sender->instance->scenePos().x() + offset, mi->line().y1(), owner->instance->scenePos().x() + offset - Rectangle::width, mi->line().y2());
         newscene->addItem(mi);
     }
 
-    //generating return messages
-    for (auto block : GetBlockList()){
-        Rectangle*rect = rectIdMap.at(block->GetID());
-        if (block->HasReturnMessage()){
+    // generating return messages
+    for (auto block : GetBlockList())
+    {
+        Rectangle *rect = rectIdMap.at(block->GetID());
+        if (block->HasReturnMessage())
+        {
             auto mi = new MessageItem(Enums::MessageTypes::returnal, rect, rect->GetEndOfBlock());
             rect->return_message = mi;
-            Rectangle*owner = rect->origin->sender;
+            Rectangle *owner = rect->origin->sender;
             owner->returning_messages.append(mi);
             mi->owner = owner;
             mi->solid = true;
+            int sender_x = mi->sender->instance->scenePos().x();
+            int owner_x = mi->owner->instance->scenePos().y();
+            int offset = mi->sender->instance->width / 2;
+            offset += sender_x < owner_x ? -Rectangle::width / 2 : mi->sender->width / 2;
+            mi->setLine(mi->sender->instance->scenePos().x() + offset, mi->line().y1(), mi->owner->instance->scenePos().x() + offset - Rectangle::width, mi->line().y2());
             newscene->addItem(mi);
         }
     }
 
-    //setting initial block
-    BlockEntity*initialBlock;
-    for (auto block : GetBlockList()){
-        if (block->GetOriginMessage() == nullptr){
+    // setting initial block
+    BlockEntity *initialBlock;
+    for (auto block : GetBlockList())
+    {
+        if (block->GetOriginMessage() == nullptr)
+        {
             initialBlock = block;
             break;
         }
     }
-    if (!this->blockEntities.isEmpty()){
+    if (!this->blockEntities.isEmpty())
+    {
         Rectangle::initial_block = rectIdMap.at(initialBlock->GetID());
         Rectangle::initial_block->origin = nullptr;
     }
+
+    Rectangle::UpdateLengths();
 }
 
 InstanceEntity *SequenceModel::CreateInstance(QString name, int x_cord, int lineLength, DiagramEntity *instanceClass)
@@ -173,9 +194,9 @@ Message *SequenceModel::CreateMessage(BlockEntity *sender, BlockEntity *owner, i
 
 InstanceEntity *SequenceModel::GetInstanceByID(int id)
 {
-    for(auto instance : instanceEntities)
+    for (auto instance : instanceEntities)
     {
-        if(instance->GetID() == id)
+        if (instance->GetID() == id)
             return instance;
     }
     return nullptr;
@@ -183,9 +204,9 @@ InstanceEntity *SequenceModel::GetInstanceByID(int id)
 
 BlockEntity *SequenceModel::GetBlockByID(int id)
 {
-    for(auto block : blockEntities)
+    for (auto block : blockEntities)
     {
-        if(block->GetID() == id)
+        if (block->GetID() == id)
             return block;
     }
     return nullptr;
@@ -193,9 +214,9 @@ BlockEntity *SequenceModel::GetBlockByID(int id)
 
 Message *SequenceModel::GetMessageByID(int id)
 {
-    for(auto message : messageEntities)
+    for (auto message : messageEntities)
     {
-        if(message->GetID() == id)
+        if (message->GetID() == id)
             return message;
     }
     return nullptr;
@@ -203,17 +224,17 @@ Message *SequenceModel::GetMessageByID(int id)
 
 void SequenceModel::RemoveInstance(InstanceEntity *instance)
 {
-    if(instance->GetInstanceClass() != nullptr)
+    if (instance->GetInstanceClass() != nullptr)
         instance->GetInstanceClass()->RemoveSeqDiagramInstace(instance);
 
-    for(int i {0}; i < instance->GetBlocks().count(); i++)
+    for (int i{0}; i < instance->GetBlocks().count(); i++)
     {
         this->RemoveBlock(instance->GetBlocks()[i]);
     }
 
-    for(int i {0}; i < instanceEntities.count(); i++)
+    for (int i{0}; i < instanceEntities.count(); i++)
     {
-        if(instanceEntities[i] == instance)
+        if (instanceEntities[i] == instance)
         {
             instanceEntities.removeAt(i);
         }
@@ -224,14 +245,14 @@ void SequenceModel::RemoveBlock(BlockEntity *block)
 {
     block->GetOwner()->RemoveBlock(block);
 
-    for(auto message : block->GetMessages())
+    for (auto message : block->GetMessages())
     {
         this->RemoveMessage(message);
     }
 
-    for(int i {0}; i < blockEntities.count(); i++)
+    for (int i{0}; i < blockEntities.count(); i++)
     {
-        if(blockEntities[i] == block)
+        if (blockEntities[i] == block)
         {
             blockEntities.removeAt(i);
         }
@@ -245,9 +266,9 @@ void SequenceModel::RemoveMessage(Message *message)
     message->GetOwner()->RemoveMessage(message);
     message->GetSender()->RemoveMessage(message);
 
-    for(int i {0}; i < messageEntities.count(); i++)
+    for (int i{0}; i < messageEntities.count(); i++)
     {
-        if(messageEntities[i] == message)
+        if (messageEntities[i] == message)
         {
             messageEntities.removeAt(i);
         }
@@ -260,20 +281,20 @@ QList<QString> SequenceModel::GetMethods(int id)
 {
     auto entity = mainModel->GetEntityById(id);
     QList<QString> methodNames;
-    for(auto method : entity->GetMethods())
+    for (auto method : entity->GetMethods())
         methodNames.append(QString::fromStdString(method->GetData()));
     return methodNames;
 }
 
 void SequenceModel::Clear()
 {
-    for(auto instance : instanceEntities)
+    for (auto instance : instanceEntities)
         delete instance;
-   instanceEntities.clear();
-    for(auto block : blockEntities)
+    instanceEntities.clear();
+    for (auto block : blockEntities)
         delete block;
     blockEntities.clear();
-    for(auto message : messageEntities)
+    for (auto message : messageEntities)
         delete message;
     messageEntities.clear();
     instancesIdMap.clear();
@@ -281,18 +302,18 @@ void SequenceModel::Clear()
 
 void SequenceModel::ConsistencyCheck()
 {
-    for(auto instance : instanceEntities)
+    for (auto instance : instanceEntities)
     {
-        for(auto block : instance->GetBlocks())
+        for (auto block : instance->GetBlocks())
         {
         }
     }
 }
 
-void SequenceModel::SaveIntoFile(const char*path)
+void SequenceModel::SaveIntoFile(const char *path)
 {
     QFile xmlFile(path);
-    if (!xmlFile.open(QFile::WriteOnly | QFile::Text ))
+    if (!xmlFile.open(QFile::WriteOnly | QFile::Text))
     {
         qDebug() << "Already opened or there is another issue";
         xmlFile.close();
@@ -309,9 +330,11 @@ void SequenceModel::SaveIntoFile(const char*path)
 
     QDomElement instace_entity;
 
-    for (auto instance : this->instanceEntities){
+    for (auto instance : this->instanceEntities)
+    {
         int id_aux = -1;
-        if (instance->GetInstanceClass()){
+        if (instance->GetInstanceClass())
+        {
             id_aux = instance->GetInstanceClass()->GetId();
         }
 
@@ -331,7 +354,7 @@ void SequenceModel::SaveIntoFile(const char*path)
 
     QDomElement block_entity;
 
-    for (BlockEntity* block : this->blockEntities)
+    for (BlockEntity *block : this->blockEntities)
     {
         block_entity = document.createElement(QString::fromStdString("Block"));
         block_entity.setAttribute("id", block->GetID());
@@ -339,7 +362,7 @@ void SequenceModel::SaveIntoFile(const char*path)
         block_entity.setAttribute("added_length", block->GetAddedLength());
         block_entity.setAttribute("y_offset", block->GetYOffset());
         block_entity.setAttribute("has_return_message", block->HasReturnMessage());
-        if(block->GetOriginMessage() != nullptr)
+        if (block->GetOriginMessage() != nullptr)
             block_entity.setAttribute("origin_message_id", block->GetOriginMessage()->GetID());
         else
             block_entity.setAttribute("origin_message_id", "nullptr");
@@ -351,7 +374,8 @@ void SequenceModel::SaveIntoFile(const char*path)
 
     QDomElement message_entity;
 
-    for (auto message : this->messageEntities){
+    for (auto message : this->messageEntities)
+    {
         message_entity = document.createElement(QString::fromStdString("Message"));
         message_entity.setAttribute("id", message->GetID());
         message_entity.setAttribute("name", message->GetName());
@@ -362,23 +386,22 @@ void SequenceModel::SaveIntoFile(const char*path)
         messages.appendChild(message_entity);
     }
 
-    //writing the content to the file
+    // writing the content to the file
     xmlContent << document.toString();
     xmlFile.close();
 }
-
 
 Model *SequenceModel::GetMainModel()
 {
     return mainModel;
 }
 
-int SequenceModel::LoadFromFile(const char*path, Model *model, QList<ClassDiagramItem*> *items, bool change)
+int SequenceModel::LoadFromFile(const char *path, Model *model, QList<ClassDiagramItem *> *items, bool change)
 {
     QList<std::pair<int, int>> newIDs;
     QDomDocument classXML;
     QFile xmlFile(path);
-    if (!xmlFile.open(QIODevice::ReadOnly ))
+    if (!xmlFile.open(QIODevice::ReadOnly))
     {
         // Error while loading file
         return -1;
@@ -393,14 +416,14 @@ int SequenceModel::LoadFromFile(const char*path, Model *model, QList<ClassDiagra
 
     std::map<QString, int> id_map;
 
-    //there can be Classes and Relations
-    while(node.isNull() == false)
+    // there can be Classes and Relations
+    while (node.isNull() == false)
     {
-        if(node.tagName() == "Instances")
+        if (node.tagName() == "Instances")
         {
             subnode = node.firstChild().toElement();
-            //there can be Relation
-            while(!subnode.isNull())
+            // there can be Relation
+            while (!subnode.isNull())
             {
                 QString id = subnode.attribute("id");
                 QString class_id = subnode.attribute("class_id");
@@ -410,24 +433,23 @@ int SequenceModel::LoadFromFile(const char*path, Model *model, QList<ClassDiagra
                 QString line_length = subnode.attribute("line_length");
                 QString visible = subnode.attribute("visible");
 
-
-                for(auto pair : newIDs)
+                for (auto pair : newIDs)
                 {
-                    if(class_id.toInt() == pair.first)
+                    if (class_id.toInt() == pair.first)
                     {
                         class_id = QString::number(pair.second);
                     }
                 }
 
                 DiagramEntity *entity;
-                if(mainModel->GetEntities().size() != 0)
+                if (mainModel->GetEntities().size() != 0)
                     entity = mainModel->GetEntityById(class_id.toInt());
                 else
                     entity = nullptr;
 
-                if((entity == nullptr || class_name.toStdString() != entity->GetName()) && class_name.toStdString() != "@user@")
+                if ((entity == nullptr || class_name.toStdString() != entity->GetName()) && class_name.toStdString() != "@user@")
                 {
-                    if(change == false)
+                    if (change == false)
                     {
                         Clear();
                         return 1;
@@ -451,8 +473,8 @@ int SequenceModel::LoadFromFile(const char*path, Model *model, QList<ClassDiagra
         else if (node.tagName() == "Blocks")
         {
             subnode = node.firstChild().toElement();
-            //there can be Relation
-            while(!subnode.isNull())
+            // there can be Relation
+            while (!subnode.isNull())
             {
                 QString id = subnode.attribute("id");
                 QString owner_id = subnode.attribute("owner_id");
@@ -466,7 +488,7 @@ int SequenceModel::LoadFromFile(const char*path, Model *model, QList<ClassDiagra
                 block->SetID(id.toInt());
                 block->SetAddedLength(added_length.toInt());
                 block->SetHasReturnMessage(has_return_message.toInt());
-                if(origin_message_id != "nullptr")
+                if (origin_message_id != "nullptr")
                     block->SetOriginMessageID(origin_message_id.toInt());
                 else
                     block->SetOriginMessageID(0);
@@ -479,8 +501,8 @@ int SequenceModel::LoadFromFile(const char*path, Model *model, QList<ClassDiagra
         else if (node.tagName() == "Messages")
         {
             subnode = node.firstChild().toElement();
-            //there can be Relation
-            while(!subnode.isNull())
+            // there can be Relation
+            while (!subnode.isNull())
             {
                 QString id = subnode.attribute("id");
                 QString sender_id = subnode.attribute("sender_id");
@@ -500,21 +522,21 @@ int SequenceModel::LoadFromFile(const char*path, Model *model, QList<ClassDiagra
         }
         node = node.nextSibling().toElement();
     }
-    for(auto block : blockEntities)
+    for (auto block : blockEntities)
     {
         block->GetOwner()->AddBlock(block);
-        if(block->GetOriginMessageID() != 0)
+        if (block->GetOriginMessageID() != 0)
             block->SetOriginMessage(GetMessageByID(block->GetOriginMessageID()));
-        if(block->GetOriginMessage() == nullptr)
+        if (block->GetOriginMessage() == nullptr)
             continue;
-        if(block->GetOriginMessage()->GetName() == "<No Method>")
+        if (block->GetOriginMessage()->GetName() == "<No Method>")
             continue;
-        if(block->GetOwner()->GetInstanceClass() == nullptr)
+        if (block->GetOwner()->GetInstanceClass() == nullptr)
             continue;
         auto method = block->GetOwner()->GetInstanceClass()->FindAttributeByData(block->GetOriginMessage()->GetName());
-        if(method == nullptr)
+        if (method == nullptr)
         {
-            if(change == false)
+            if (change == false)
             {
                 Clear();
                 return 1;

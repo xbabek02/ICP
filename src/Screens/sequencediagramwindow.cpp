@@ -1,3 +1,14 @@
+/**
+ * @file sequencediagramwindow.cpp
+ * @author Radomír Bábek, Martin Ohnút (xbabek02, xohnut01)
+ * @brief Qt window of sequence diagram editor, function definitions
+ * @version 0.1
+ * @date 2022-05-09
+ *
+ * @copyright Copyright (c) 2022
+ *
+ */
+
 #include "sequencediagramwindow.h"
 #include "ui_sequencediagramwindow.h"
 #include "./Models/classesmodel.h"
@@ -13,9 +24,8 @@
 #include <QString>
 #include <QDebug>
 
-SequenceDiagramWindow::SequenceDiagramWindow(SequenceModel *sequenceModel, MainWindow *mainWindow, QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::SequenceDiagramWindow)
+SequenceDiagramWindow::SequenceDiagramWindow(SequenceModel *sequenceModel, MainWindow *mainWindow, QWidget *parent) : QMainWindow(parent),
+                                                                                                                      ui(new Ui::SequenceDiagramWindow)
 {
     ui->setupUi(this);
 
@@ -30,7 +40,7 @@ SequenceDiagramWindow::SequenceDiagramWindow(SequenceModel *sequenceModel, MainW
     ui->classesView->setSelectionMode(QAbstractItemView::ExtendedSelection);
     ui->methodView->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
-    //connects button functions to buttons
+    // connects button functions to buttons
     connect(ui->createInstanceButton, SIGNAL(clicked(bool)), this, SLOT(CreateInstance()));
     connect(ui->deleteInstanceButton, SIGNAL(clicked(bool)), this, SLOT(DeleteInstance()));
     connect(ui->prolongueButton, SIGNAL(clicked(bool)), this, SLOT(ProlongueLine()));
@@ -45,7 +55,7 @@ SequenceDiagramWindow::SequenceDiagramWindow(SequenceModel *sequenceModel, MainW
     connect(ui->saveFileButton, SIGNAL(clicked(bool)), this, SLOT(SaveFile()));
     connect(ui->openFileButton, SIGNAL(clicked(bool)), this, SLOT(OpenFile()));
 
-    //setting up models
+    // setting up models
     cm = new ClassesModel(sequenceModel->GetMainModel(), ui->classesView);
     ui->classesView->setModel(cm);
 
@@ -58,7 +68,8 @@ SequenceDiagramWindow::SequenceDiagramWindow(SequenceModel *sequenceModel, MainW
 
 SequenceDiagramWindow::~SequenceDiagramWindow()
 {
-    for (auto ii : instanceItems){
+    for (auto ii : instanceItems)
+    {
         delete ii;
     }
     delete user;
@@ -68,31 +79,31 @@ SequenceDiagramWindow::~SequenceDiagramWindow()
     delete ui;
 }
 
-void SequenceDiagramWindow::InitScene(MethodModel*mm){
+void SequenceDiagramWindow::InitScene(MethodModel *mm)
+{
     scene = new SeqDScene(mm, ui->graphicsView);
 
     ui->graphicsView->setScene(scene);
 
     ui->graphicsView->setRenderHint(QPainter::Antialiasing);
 
-
     user = new UserInstance();
     user->text_class = "User";
     scene->addItem(user);
 }
 
-
 /* BUTTON FUNCTIONS */
-void SequenceDiagramWindow::CreateInstance(){
+void SequenceDiagramWindow::CreateInstance()
+{
     QModelIndex index = ui->classesView->currentIndex();
-    auto de = index.data(Qt::UserRole).value<DiagramEntity*>();
-    if (index.isValid()){
-        //create instance in model
-        InstanceItem* ii = new InstanceItem(nullptr, de, QString::fromStdString(de->GetName()));
+    auto de = index.data(Qt::UserRole).value<DiagramEntity *>();
+    if (index.isValid())
+    {
+        // create instance in model
+        InstanceItem *ii = new InstanceItem(nullptr, de, QString::fromStdString(de->GetName()));
 
         this->instanceItems.append(ii);
         this->im->addRow(ii);
-
 
         scene->addItem(ii);
         scene->setFocusItem(ii);
@@ -101,19 +112,23 @@ void SequenceDiagramWindow::CreateInstance(){
     }
 }
 
-void SequenceDiagramWindow::DeleteInstance(){
+void SequenceDiagramWindow::DeleteInstance()
+{
     QModelIndex index = ui->instancesView->currentIndex();
-    auto ii = index.data(Qt::UserRole).value<InstanceItem*>();
+    auto ii = index.data(Qt::UserRole).value<InstanceItem *>();
 
-    if (index.isValid()){
-       if (dynamic_cast<UserInstance*>(ii)){
+    if (index.isValid())
+    {
+        if (dynamic_cast<UserInstance *>(ii))
+        {
             im->SwitchVisible(ii->GetID());
             return;
-       }
+        }
 
-       for (auto rectangle : ii->rectangles){
-           scene->DeleteRectangle(rectangle);
-       }
+        for (auto rectangle : ii->rectangles)
+        {
+            scene->DeleteRectangle(rectangle);
+        }
 
         this->im->removeRow(index);
         scene->removeItem(ii);
@@ -133,22 +148,22 @@ void SequenceDiagramWindow::OpenFile()
 {
     QString file = QFileDialog::getOpenFileName();
 
-    if(file.compare("") == 0)
+    if (file.compare("") == 0)
         return;
     sequenceModel->Clear();
 
-    if(sequenceModel->LoadFromFile(file.toStdString().c_str(), sequenceModel->GetMainModel(), mainWindow->GetItems(), false) == 1)
+    if (sequenceModel->LoadFromFile(file.toStdString().c_str(), sequenceModel->GetMainModel(), mainWindow->GetItems(), false) == 1)
     {
         QMessageBox::StandardButton reply;
-          reply = QMessageBox::question(this, "Inconsistence detected", "Unknown methods and classes found. Do you want to add them to the class diagram?",
-                                        QMessageBox::Yes|QMessageBox::No);
-          if (reply == QMessageBox::Yes)
-              sequenceModel->LoadFromFile(file.toStdString().c_str(), sequenceModel->GetMainModel(), mainWindow->GetItems(), true);
-          else
-              return;
+        reply = QMessageBox::question(this, "Inconsistence detected", "Unknown methods and classes found. Do you want to add them to the class diagram?",
+                                      QMessageBox::Yes | QMessageBox::No);
+        if (reply == QMessageBox::Yes)
+            sequenceModel->LoadFromFile(file.toStdString().c_str(), sequenceModel->GetMainModel(), mainWindow->GetItems(), true);
+        else
+            return;
     }
     auto aux = scene;
-    //creating new scene
+    // creating new scene
     SeqDScene *newscene = new SeqDScene(mm, ui->graphicsView);
     sequenceModel->LoadToAppState(newscene);
     scene = newscene;
@@ -156,39 +171,47 @@ void SequenceDiagramWindow::OpenFile()
     delete aux;
 }
 
-void SequenceDiagramWindow::ProlongueLine(){
+void SequenceDiagramWindow::ProlongueLine()
+{
     QModelIndex index = ui->instancesView->currentIndex();
-    auto ii = index.data(Qt::UserRole).value<InstanceItem*>();
+    auto ii = index.data(Qt::UserRole).value<InstanceItem *>();
 
-    if (index.isValid()){
+    if (index.isValid())
+    {
         ii->length += 50;
         ii->update();
         scene->update();
     }
 }
-void SequenceDiagramWindow::ShortenLine(){
+void SequenceDiagramWindow::ShortenLine()
+{
     QModelIndex index = ui->instancesView->currentIndex();
-    auto ii = index.data(Qt::UserRole).value<InstanceItem*>();
+    auto ii = index.data(Qt::UserRole).value<InstanceItem *>();
 
-    if (index.isValid()){
-       if (ii->length-50 >= ii->default_length-100){
-           ii->length -= 50;
-           ii->update();
-           scene->update();
-       }
+    if (index.isValid())
+    {
+        if (ii->length - 50 >= ii->default_length - 100)
+        {
+            ii->length -= 50;
+            ii->update();
+            scene->update();
+        }
     }
 }
-void SequenceDiagramWindow::ChangeVisibility(){
-    //get selected item from instancesView
+void SequenceDiagramWindow::ChangeVisibility()
+{
+    // get selected item from instancesView
     QModelIndex index = ui->instancesView->currentIndex();
-    auto ii = index.data(Qt::UserRole).value<InstanceItem*>();
-    if (!index.isValid()){
+    auto ii = index.data(Qt::UserRole).value<InstanceItem *>();
+    if (!index.isValid())
+    {
         return;
     }
     im->SwitchVisible(ii->GetID());
     QList<QGraphicsItem *> *list = scene->GetAllDependentOwnRectFree(ii);
-    for (QGraphicsItem *item : *list){
-        auto visibility = dynamic_cast<ItemVisibility*>(item);
+    for (QGraphicsItem *item : *list)
+    {
+        auto visibility = dynamic_cast<ItemVisibility *>(item);
         visibility->SetDependency(ii->GetID(), ii->isVisible());
         item->setVisible(visibility->Visible());
     }
@@ -196,16 +219,19 @@ void SequenceDiagramWindow::ChangeVisibility(){
     delete list;
 }
 
-void SequenceDiagramWindow::AddInitialBlock() {
-    //only one initial block allowed
-    if (Rectangle::initial_block){
+void SequenceDiagramWindow::AddInitialBlock()
+{
+    // only one initial block allowed
+    if (Rectangle::initial_block)
+    {
         return;
     }
 
-    //get selected item from instancesView
+    // get selected item from instancesView
     QModelIndex index = ui->instancesView->currentIndex();
-    auto ii = index.data(Qt::UserRole).value<InstanceItem*>();
-    if (!index.isValid()){
+    auto ii = index.data(Qt::UserRole).value<InstanceItem *>();
+    if (!index.isValid())
+    {
         return;
     }
 
@@ -216,10 +242,12 @@ void SequenceDiagramWindow::AddInitialBlock() {
 
 void SequenceDiagramWindow::ProlongueBlock()
 {
-    Rectangle*selected;
-    for (auto item : scene->selectedItems()){
-        selected = dynamic_cast<Rectangle*>(item);
-        if (selected) {
+    Rectangle *selected;
+    for (auto item : scene->selectedItems())
+    {
+        selected = dynamic_cast<Rectangle *>(item);
+        if (selected)
+        {
             selected->AddRemoveLength(Rectangle::min_length);
         }
     }
@@ -228,10 +256,12 @@ void SequenceDiagramWindow::ProlongueBlock()
 
 void SequenceDiagramWindow::ShortenBlock()
 {
-    Rectangle*selected;
-    for (auto item : scene->selectedItems()){
-        selected = dynamic_cast<Rectangle*>(item);
-        if (selected) {
+    Rectangle *selected;
+    for (auto item : scene->selectedItems())
+    {
+        selected = dynamic_cast<Rectangle *>(item);
+        if (selected)
+        {
             selected->AddRemoveLength(-Rectangle::min_length);
         }
     }
@@ -240,11 +270,14 @@ void SequenceDiagramWindow::ShortenBlock()
 
 void SequenceDiagramWindow::SwitchSyncAsync()
 {
-    MessageItem*selected;
-    for (auto item : scene->selectedItems()){
-        selected = dynamic_cast<MessageItem*>(item);
-        if (selected) {
-            if (selected->type == Enums::MessageTypes::returnal){
+    MessageItem *selected;
+    for (auto item : scene->selectedItems())
+    {
+        selected = dynamic_cast<MessageItem *>(item);
+        if (selected)
+        {
+            if (selected->type == Enums::MessageTypes::returnal)
+            {
                 return;
             }
             selected->SwitchSync();
@@ -255,25 +288,31 @@ void SequenceDiagramWindow::SwitchSyncAsync()
 
 void SequenceDiagramWindow::ReturnMessage()
 {
-    Rectangle*selected;
-    for (auto item : scene->selectedItems()){
-        selected = dynamic_cast<Rectangle*>(item);
-        if (selected) {
-            if (!selected->return_message){ // no return message, then create one
-                if (!selected->origin) { //if is initial block
+    Rectangle *selected;
+    for (auto item : scene->selectedItems())
+    {
+        selected = dynamic_cast<Rectangle *>(item);
+        if (selected)
+        {
+            if (!selected->return_message)
+            { // no return message, then create one
+                if (!selected->origin)
+                { // if is initial block
                     continue;
                 }
-                int x1 = selected->scenePos().x() + InstanceItem::default_width/2 ;
+                int x1 = selected->scenePos().x() + InstanceItem::default_width / 2;
                 int y = selected->GetEndOfBlock();
                 selected->origin->update();
-                int x2 = selected->origin->sender->scenePos().x() + InstanceItem::default_width/2 + selected->width/2;
+                int x2 = selected->origin->sender->scenePos().x() + InstanceItem::default_width / 2 + selected->width / 2;
                 selected->return_message = new MessageItem(Enums::MessageTypes::returnal, selected, y);
 
-                if (x1 < x2){ //left to right returnal
-                    selected->return_message->setLine(x1 + selected->width/2,y,x2-Rectangle::width, y);
+                if (x1 < x2)
+                { // left to right returnal
+                    selected->return_message->setLine(x1 + selected->width / 2, y, x2 - Rectangle::width, y);
                 }
-                else{ //rigth to left returnal
-                    selected->return_message->setLine(x1 - selected->width/2, y, x2, y);
+                else
+                { // rigth to left returnal
+                    selected->return_message->setLine(x1 - selected->width / 2, y, x2, y);
                 }
                 scene->addItem(selected->return_message);
                 selected->return_message->owner = selected->origin->sender;
@@ -281,7 +320,8 @@ void SequenceDiagramWindow::ReturnMessage()
 
                 selected->return_message->update();
             }
-            else{ // delete return message,
+            else
+            { // delete return message,
                 scene->DeleteMessage(selected->return_message);
             }
         }
@@ -293,12 +333,14 @@ void SequenceDiagramWindow::SetMethod()
 {
     QModelIndex index = ui->methodView->currentIndex();
     auto value = index.data(Qt::DisplayRole);
-    if (index.isValid()){
-        //create instance in model
+    if (index.isValid())
+    {
+        // create instance in model
     }
     mm->currently_displayed->method_str = value.toString();
     mm->currently_displayed->update();
-    if (mm->currently_displayed->owner->return_message){
+    if (mm->currently_displayed->owner->return_message)
+    {
         mm->currently_displayed->owner->return_message->update();
     }
 }

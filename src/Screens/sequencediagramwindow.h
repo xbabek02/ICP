@@ -1,3 +1,14 @@
+/**
+ * @file sequencediagramwindow.h
+ * @author Radomír Bábek, Martin Ohnút (xbabek02, xohnut01)
+ * @brief Qt window of sequence diagram editor, function declarations
+ * @version 0.1
+ * @date 2022-05-09
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
+
 #ifndef SEQUENCEDIAGRAMWINDOW_H
 #define SEQUENCEDIAGRAMWINDOW_H
 
@@ -9,7 +20,6 @@
 #include "./SeqDiagItems/instanceitem.h"
 #include <QVector>
 #include "./SeqDiagItems/userinstance.h"
-#include "./SeqDiagItems/instanceline.h"
 #include "../Entities/SeqDiagram/sequencemodel.h"
 #include "mainwindow.h"
 #include <QMessageBox>
@@ -55,7 +65,6 @@ private:
     SequenceModel *sequenceModel;
 
     UserInstance*user;
-    InstanceLine*user_line;
     QVector<InstanceItem*> instanceItems;
 
 };

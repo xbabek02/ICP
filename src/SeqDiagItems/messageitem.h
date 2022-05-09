@@ -1,3 +1,14 @@
+/**
+ * @file messageitem.h
+ * @author Radomír Bábek, Martin Ohnút (xbabek02, xohnut01)
+ * @brief QGraphicsItem message class
+ * @version 0.1
+ * @date 2022-05-09
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
+
 #ifndef MESSAGEITEM_H
 #define MESSAGEITEM_H
 
