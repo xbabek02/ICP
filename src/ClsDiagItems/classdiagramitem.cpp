@@ -323,11 +323,6 @@ void ClassDiagramItem::RowChanged(QString value, int id)
         rows[id]->setBrush(QBrush{Qt::gray});
 }
 
-QList<SingletonConnection*> ClassDiagramItem::GetSingletonViewItems()
-{
-    return entityModel->GetSingletonViewItems();
-}
-
 void ClassDiagramItem::Check()
 {
     for(int i {0}; i < numberOfRows; i++)

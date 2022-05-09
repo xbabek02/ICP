@@ -49,7 +49,7 @@ public:
     QPointF *GetLinePoint(QPointF *destination);
     QGraphicsEllipseItem *GetNode(int id);
     QList<Connection*> GetRelationViewItems();
-    QList<SingletonConnection*> GetSingletonViewItems();
+
 
 signals:
     void PositionSignal(QPointF position);

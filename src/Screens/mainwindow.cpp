@@ -295,9 +295,7 @@ void MainWindow::DeleteNodeButton()
             std::vector<RelationEntity*> relations = item->GetModel()->GetRelations();
             for(auto relation : relations)
             {
-                if(relation->GetEntites().first == relation->GetEntites().second)
-                    delete relation->GetSingletonViewItem();
-                else
+                if(relation->GetEntites().first != relation->GetEntites().second)
                     delete relation->GetViewItem();
                 mainModel->DeleteRelationById(relation->GetId());
             }
