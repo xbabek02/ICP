@@ -60,5 +60,6 @@ src/.vscode/targets.log
 .gitignore
 src/Entities/.vscode/targets.log
 src/Entities/.vscode/dryrun.log
+src/.qtc_clangd/
 .gitignore
 .gitignore
