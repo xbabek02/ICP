@@ -6,7 +6,7 @@
 ClassesModel::ClassesModel(Model*m, QObject *parent)
     : QAbstractListModel(parent), m(m)
 {
-
+    loadData();
 }
 
 int ClassesModel::rowCount(const QModelIndex &parent) const
@@ -71,6 +71,5 @@ void ClassesModel::SetClassDiagModel(Model *m)
 
 Qt::ItemFlags ClassesModel::flags(const QModelIndex &index) const
 {
-    // I ought to handle !index.isValid(), but again just a demo.
     return QAbstractListModel::flags(index) | Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 }
