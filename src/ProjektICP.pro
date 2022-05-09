@@ -25,6 +25,7 @@ SOURCES += \
     ClsDiagItems/singletonconnection.cpp \
     ClsDiagItems/textitem.cpp\
     ClsDiagItems/textstateitem.cpp \
+    SeqDiagItems/itemvisibility.cpp \
 \
     Screens/sequencediagramwindow.cpp \
     Models/classesmodel.cpp \
@@ -66,6 +67,7 @@ HEADERS += \
     ClsDiagItems/singletonconnection.h \
     ClsDiagItems/textitem.h\
     ClsDiagItems/textstateitem.h \
+    SeqDiagItems/itemvisibility.h \
 \
     Screens/sequencediagramwindow.h \
     Models/classesmodel.h \

@@ -151,7 +151,7 @@ void SequenceDiagramWindow::OpenFile()
     sequenceModel->LoadToAppState(newscene);
     auto aux = scene;
     ui->graphicsView->setScene(newscene);
-
+    delete aux;
 }
 
 void SequenceDiagramWindow::ProlongueLine(){
@@ -184,9 +184,11 @@ void SequenceDiagramWindow::ChangeVisibility(){
         return;
     }
     im->SwitchVisible(ii->GetID());
-    QList<QGraphicsItem *> *list = scene->GetAllDependent(ii);
+    QList<QGraphicsItem *> *list = scene->GetAllDependentOwnRectFree(ii);
     for (QGraphicsItem *item : *list){
-        item->setVisible(!item->isVisible());
+        auto visibility = dynamic_cast<ItemVisibility*>(item);
+        visibility->SetDependency(ii->GetID(), ii->isVisible());
+        item->setVisible(visibility->Visible());
     }
     ii->setVisible(!ii->isVisible());
     delete list;

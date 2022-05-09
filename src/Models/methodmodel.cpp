@@ -23,7 +23,7 @@ QVariant MethodModel::data(const QModelIndex &index, int role) const
     if (!index.isValid())
         return QVariant();
 
-    QString method_name = m_data.at(index.row());
+    QString method_name = QString::fromStdString(m_data.at(index.row())->GetData());
     if (role == Qt::DisplayRole)
         return QVariant(method_name);
     return QVariant();
@@ -53,12 +53,13 @@ void MethodModel::loadData(DiagramEntity *de)
     if (!de){
         return;
     }
+
     ClearData();
     beginInsertRows(QModelIndex(), 0, de->AttribCount());
     for (std::size_t i = 0; i < de->AttribCount(); i++){
         AttributeEntity*ae = de->GetAttribAt(i);
         if (ae->IsMethod()){
-            m_data.push_back(QString::fromStdString(ae->GetData()));
+            m_data.push_back(ae);
         }
 
     }

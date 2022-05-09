@@ -7,10 +7,11 @@
 #include "./Common/enums.h"
 #include "./Entities/AttributeEntity.h"
 #include "idcls.h"
+#include "itemvisibility.h"
 
 class Rectangle;
 
-class MessageItem : public QGraphicsLineItem, public IDcls
+class MessageItem : public QGraphicsLineItem, public IDcls, public ItemVisibility
 {
 public:
     MessageItem(Enums::MessageTypes type, Rectangle* sender, int y, QGraphicsItem*parent = nullptr);
@@ -22,6 +23,7 @@ public:
     QRectF textRect;
     bool IsLeftToRight();
     QString method_str = "<No Method>";
+    std::string *method_ptr;
     Enums::MessageTypes type;
     void SwitchSync();
     void UpdateDrawMessage(QPointF new_point);

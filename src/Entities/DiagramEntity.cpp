@@ -297,3 +297,4 @@ DiagramEntity::~DiagramEntity()
     }
 
 }
+

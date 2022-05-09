@@ -171,6 +171,7 @@ AttributeEntity *Model::GetAttributeEntityByName(DiagramEntity *de, std::string 
             return de->GetAttribAt(i);
         }
     }
+    return nullptr;
 }
 
 void Model::SetUndoStack(QUndoStack *undoStack)

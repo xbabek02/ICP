@@ -9,7 +9,7 @@
 #include <QTextOption>
 
 MessageItem::MessageItem(Enums::MessageTypes type, Rectangle* sender, int y, QGraphicsItem *parent)
-    : QGraphicsLineItem(parent), sender(sender), startY(y), type(type), IDcls()
+    : QGraphicsLineItem(parent), IDcls(), ItemVisibility(),  sender(sender), startY(y), type(type)
 {
     if (type == Enums::MessageTypes::returnal){
         setPen(QPen(Qt::black, 3, Qt::DashDotLine));
@@ -101,7 +101,8 @@ void MessageItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
     }
 
     else if (type == Enums::returnal){
-        //setting the message name but warying possible uncommon exceptions
+        painter->drawRect(boundingRect());
+        //setting the message name but warying possible rare exceptions
         if (sender){
             if (sender->origin){
                 method_str = sender->origin->method_str;
@@ -120,6 +121,7 @@ void MessageItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
             textRect.setRect(line().pointAt(0.77).x(), line().y1()-30, 200, 25);
             painter->drawText(textRect, "return " + method_str, option_txt);
         }
+        this->update();
     }
     QGraphicsLineItem::paint(painter, option, widget);
 }

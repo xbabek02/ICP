@@ -6,6 +6,7 @@
 #include <QDebug>
 #include <QGraphicsScene>
 
+
 int Rectangle::width = 25;
 int Rectangle::min_length = 50;
 Rectangle*Rectangle::initial_block = nullptr;
@@ -38,8 +39,8 @@ void Rectangle::AddRemoveLength(int added)
 
 
 Rectangle::Rectangle(QGraphicsItem *parent, MessageItem*origin, int offset) :
-    QGraphicsRectItem(parent), length(min_length), origin(origin),
-    addedLength(0), vertical_offset(offset), IDcls()
+    QGraphicsRectItem(parent), IDcls(), ItemVisibility(), length(min_length),
+    vertical_offset(offset), addedLength(0), origin(origin)
 {
     if (!(instance = dynamic_cast<InstanceItem*>(parent))){
         qDebug("Bad Dynamic cast in Rectangle constructor");
@@ -51,7 +52,6 @@ Rectangle::Rectangle(QGraphicsItem *parent, MessageItem*origin, int offset) :
     setPen(QPen(Qt::black, 4));
 
     setRect(instance->width/2 - width/2, offset, width, length);
-    update();
     setFlag(QGraphicsItem::ItemIsSelectable);
 }
 

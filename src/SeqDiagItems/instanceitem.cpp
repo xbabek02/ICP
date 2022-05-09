@@ -37,8 +37,8 @@ int InstanceItem::MoveIfObstructed(int direction){
 }
 
 InstanceItem::InstanceItem(QGraphicsItem *parent, DiagramEntity*classEntity, QString text) :
-    QGraphicsItem(parent), classEntity(classEntity), text_class(text), length(default_length),
-    width(default_width), IDcls()
+    QGraphicsItem(parent), IDcls(), classEntity(classEntity), text_class(text),
+    length(default_length), width(default_width)
 {
     setFlag(QGraphicsItem::ItemIsSelectable);
     setFlag(QGraphicsItem::ItemIsFocusable);

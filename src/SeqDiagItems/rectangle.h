@@ -6,11 +6,12 @@
 #include "messageitem.h"
 #include "instanceitem.h"
 #include "idcls.h"
+#include "itemvisibility.h"
 
 class MessageItem;
 class InstanceItem;
 
-class Rectangle : public QGraphicsRectItem, public IDcls
+class Rectangle : public QGraphicsRectItem, public IDcls, public ItemVisibility
 {
 private:
     int length;

@@ -2,6 +2,7 @@
 #define METHODMODEL_H
 
 #include "./Entities/AttributeEntity.h"
+
 #include "./SeqDiagItems/messageitem.h"
 #include <QAbstractListModel>
 #include <vector>
@@ -9,6 +10,7 @@
 
 class MethodModel : public QAbstractListModel
 {
+    Q_OBJECT
 public:
 
     explicit MethodModel(QObject *parent = nullptr);
@@ -22,7 +24,10 @@ public:
     void setMessage(MessageItem *mi);
     MessageItem*currently_displayed;
 private:
-    std::vector<QString>m_data;
+    std::vector<AttributeEntity*>m_data;
+
+
+
 };
 
 #endif // METHODMODEL_H

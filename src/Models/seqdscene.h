@@ -16,7 +16,11 @@ public:
     void DeleteRectangle(Rectangle*rectangle);
     void DeleteMessage(MessageItem*message);
     void GetAllDependent(Rectangle*rectangle, QList<QGraphicsItem*>*list);
+    void GetAllDependentRectFree(Rectangle *rectangle, QList<QGraphicsItem *> *list);
+    QList<QGraphicsItem *> *GetAllDependentOwnRectFree(InstanceItem *instance);
     QList<QGraphicsItem *> *GetAllDependent(InstanceItem*instance);
+
+
 
 public slots:
     void selChanged();
@@ -26,7 +30,7 @@ protected:
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
-    virtual void keyPressEvent(QKeyEvent *event);
+    virtual void keyPressEvent(QKeyEvent *event) override;
 
 private:
     MessageItem*editedMessage = nullptr;

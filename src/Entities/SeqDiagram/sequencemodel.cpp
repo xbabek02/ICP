@@ -249,8 +249,6 @@ void SequenceModel::RemoveInstance(InstanceEntity *instance)
             instanceEntities.removeAt(i);
         }
     }
-
-
 }
 
 void SequenceModel::RemoveBlock(BlockEntity *block)

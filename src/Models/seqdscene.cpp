@@ -13,7 +13,7 @@
 #include <./Common/enums.h>
 
 SeqDScene::SeqDScene(MethodModel*mm, QObject *parent) :
-    mm(mm), QGraphicsScene(parent)
+    QGraphicsScene(parent), mm(mm)
 {
     connect(this, SIGNAL(selectionChanged()), this, SLOT(selChanged()));
 }
@@ -184,12 +184,40 @@ void SeqDScene::GetAllDependent(Rectangle *rectangle, QList<QGraphicsItem*>*list
 
 }
 
+void SeqDScene::GetAllDependentRectFree(Rectangle *rectangle, QList<QGraphicsItem*>*list)
+{
+    for (auto message : rectangle->sent){
+        GetAllDependent(message->owner, list);
+    }
+    if (rectangle->return_message){
+        list->append(rectangle->return_message);
+    }
+    if (rectangle->origin){
+        list->append(rectangle->origin);
+    }
+
+}
+
 QList<QGraphicsItem *> *SeqDScene::GetAllDependent(InstanceItem *instance)
 {
     QList<QGraphicsItem*>*list = new QList<QGraphicsItem*>;
     for (auto item : instance->rectangles){
         auto list2 = new QList<QGraphicsItem*>;
         GetAllDependent(item, list);
+        for (auto list_item : *list2){
+            list->append(list_item);
+        }
+        delete list2;
+    }
+    return list;
+}
+
+QList<QGraphicsItem *> *SeqDScene::GetAllDependentOwnRectFree(InstanceItem *instance)
+{
+    QList<QGraphicsItem*>*list = new QList<QGraphicsItem*>;
+    for (auto item : instance->rectangles){
+        auto list2 = new QList<QGraphicsItem*>;
+        GetAllDependentRectFree(item, list);
         for (auto list_item : *list2){
             list->append(list_item);
         }
