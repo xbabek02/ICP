@@ -132,23 +132,6 @@ void Connection::UpdatePosition()
 {
     position1 = new QPointF(node1->x() + node1->parentItem()->x(), node1->y() + node1->parentItem()->y());
     position2 = new QPointF(node2->x() + node2->parentItem()->x(), node2->y() + node2->parentItem()->y());
-    /*
-    if(node1 != nullptr)
-    {
-        QPointF *newpos = new QPointF(node1->x() + item1->mainBody->x(), node1->y() + item1->mainBody->y());
-        this->position1 = newpos;
-    }
-    else
-        this->position1 = item1->GetLinePoint(item2->GetCenter());
-
-    if(node2 != nullptr)
-    {
-        QPointF *newpos = new QPointF(node2->x() + item2->mainBody->x(), node2->y() + item2->mainBody->y());
-        this->position2 = newpos;
-    }
-    else
-        this->position2 = item2->GetLinePoint(item1->GetCenter());
-    */
 }
 
 //change line when item1 position changes
@@ -180,12 +163,6 @@ void Connection::UpdateLine()
 
 void Connection::Rotate()
 {
-    /*
-    auto tmpItem = item1;
-    item1 = item2;
-    item2 = tmpItem;
-    */
-
     auto tmpNode = node1;
     node1 = node2;
     node2 = tmpNode;

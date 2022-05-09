@@ -1,14 +1,5 @@
 #include "instanceentity.h"
 
-/*
-DiagramEntity *instanceClass;
-QString name;
-QList<BlockEntity*> blocks;
-int x_cord;
-int lineLength;
-bool visible;
-*/
-
 int InstanceEntity::id_generator = 1;
 
 InstanceEntity::InstanceEntity(QString name, int x_cord, int lineLength, DiagramEntity *instanceClass)

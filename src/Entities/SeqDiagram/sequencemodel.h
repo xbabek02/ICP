@@ -29,6 +29,7 @@ public:
     BlockEntity *CreateBlock(InstanceEntity *owner, int y_offset, Message *originMessage = nullptr);
     Message *CreateMessage(BlockEntity *sender, BlockEntity *owner, int y_cord);
     InstanceEntity *GetInstanceByID(int id);
+    QList<QString> GetMethods(int id);
     BlockEntity *GetBlockByID(int id);
     Message *GetMessageByID(int id);
     Model *GetMainModel();

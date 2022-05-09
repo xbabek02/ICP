@@ -1,14 +1,5 @@
 #include "blockentity.h"
 
-/*
-Message *originMessage = nullptr;
-QList<Message*> messages;
-InstanceEntity *owner;
-int addedLength;
-int y_offset;
-bool hasReturnMessage;
-*/
-
 int BlockEntity::id_generator = 1;
 
 BlockEntity::BlockEntity(InstanceEntity *owner, int y_offset, Message *originMessage)

@@ -8,37 +8,6 @@ SequenceModel::SequenceModel(Model *mainModel, InstancesModel *instances_model)
     this->instModel = instances_model;
 }
 
-void SequenceModel::Test(QGraphicsScene *scene, QList<ClassDiagramItem*> items)
-{
-    /*
-    CreateInstance("zmrd", 20, 50, mainModel->GetEntityById(1));
-    CreateInstance("hovno", 25560, 540, mainModel->GetEntityById(1));
-    CreateInstance("prdel", 20, 50, mainModel->GetEntityById(1));
-    CreateInstance("zmrd", 20, 50, mainModel->GetEntityById(1));
-
-    CreateBlock(instanceEntities[0], 50);
-    CreateBlock(instanceEntities[1], 550);
-    CreateBlock(instanceEntities[2], 580);
-    CreateBlock(instanceEntities[1], 510);
-
-    CreateMessage(blockEntities[0], blockEntities[2], 40);
-    CreateMessage(blockEntities[0], blockEntities[2], 40);
-    CreateMessage(blockEntities[0], blockEntities[2], 40);
-
-    blockEntities[2]->SetOriginMessage(messageEntities[1]);
-    blockEntities[2]->SetOriginMessage(messageEntities[0]);
-    blockEntities[2]->SetOriginMessage(messageEntities[2]);
-
-    messageEntities[0]->SetName("type picus()");
-    messageEntities[1]->SetName("type ppopo()");
-    messageEntities[2]->SetName("type mlmllm()");
-
-    SaveIntoFile("C:/Users/Radek/Desktop/skola/sracka.txt");
-
-    Clear();
-    */
-}
-
 QList<BlockEntity *> SequenceModel::GetBlockList()
 {
     return this->blockEntities;
@@ -287,6 +256,15 @@ void SequenceModel::RemoveMessage(Message *message)
     delete message;
 }
 
+QList<QString> SequenceModel::GetMethods(int id)
+{
+    auto entity = mainModel->GetEntityById(id);
+    QList<QString> methodNames;
+    for(auto method : entity->GetMethods())
+        methodNames.append(QString::fromStdString(method->GetData()));
+    return methodNames;
+}
+
 void SequenceModel::Clear()
 {
     for(auto instance : instanceEntities)
@@ -330,15 +308,7 @@ void SequenceModel::SaveIntoFile(const char*path)
     root.appendChild(instances);
 
     QDomElement instace_entity;
-/*
-    int id;
-    DiagramEntity *instanceClass;
-    QString name;
-    QList<BlockEntity*> blocks;
-    int x_cord;
-    int lineLength;
-    bool visible;
-  */
+
     for (auto instance : this->instanceEntities){
         int id_aux = -1;
         if (instance->GetInstanceClass()){
@@ -361,18 +331,6 @@ void SequenceModel::SaveIntoFile(const char*path)
 
     QDomElement block_entity;
 
-/*
- *
- *
-    int id;
-    Message *originMessage;
-    QList<Message*> messages;
-    InstanceEntity *owner;
-    int addedLength;
-    int y_offset;
-    bool hasReturnMessage;
-    */
-
     for (BlockEntity* block : this->blockEntities)
     {
         block_entity = document.createElement(QString::fromStdString("Block"));
@@ -392,16 +350,6 @@ void SequenceModel::SaveIntoFile(const char*path)
     root.appendChild(messages);
 
     QDomElement message_entity;
-
-    /*
-     *
-    int id;
-    BlockEntity *sender;
-    BlockEntity *owner;
-    AttributeEntity  *method;
-    bool async;
-    int y_cord;
-    */
 
     for (auto message : this->messageEntities){
         message_entity = document.createElement(QString::fromStdString("Message"));
@@ -488,6 +436,9 @@ int SequenceModel::LoadFromFile(const char*path, Model *model, QList<ClassDiagra
                     model->GetUndoStack()->push(command);
                     items->last()->SetUndoStack(model->GetUndoStack());
                     entity = items->last()->GetModel();
+                    entity->SetDiagramItem(items->last());
+                    entity->SetName(class_name.toStdString());
+                    items->last()->ModelNameChanged(class_name);
                     newIDs.append(std::make_pair(class_id.toInt(), entity->GetId()));
                 }
 

@@ -13,18 +13,15 @@ ClassDiagramItem::ClassDiagramItem(QGraphicsScene *scene, DiagramEntity *entityM
     mainBody = new ClassItemHead(GetWidth(), GetHeight());
     scene->addItem(mainBody);
 
-    TextItem *text = new TextItem(mainBody);
+    text = new TextItem(mainBody);
     text->SetId(numberOfRows);
     text->setPos(20, 5);
     text->setPlainText(QString::fromStdString(entityModel->GetName()));
 
     methodRowIndex = 0;
 
-    qDebug() << methodRowIndex << "   " << entityModel->GetFirstMethodIndex();
     CreateNodes();
     LoadModel();
-
-    qDebug() << methodRowIndex << "   " << entityModel->GetFirstMethodIndex();
 
     connect(text, SIGNAL(valueChanged(QString,int)), this, SLOT(NameChanged(QString)));
     connect(mainBody, SIGNAL(positionChange(QPointF)), this, SLOT(PositionChange(QPointF)));
@@ -314,8 +311,8 @@ void ClassDiagramItem::PushMethodDown()
 void ClassDiagramItem::RowChanged(QString value, int id)
 {
     entityModel->GetAttribAt(id)->SetData(value.toStdString());
-    if(entityModel->GetAttribAt(id)->IsOK() != true || (id < methodRowIndex && entityModel->GetAttribAt(id)->IsMethod())
-        || (id >= methodRowIndex && !entityModel->GetAttribAt(id)->IsMethod()))
+    if((id < methodRowIndex && (entityModel->GetAttribAt(id)->IsMethod() || entityModel->GetAttribAt(id)->IsOK() != true))
+            || (id >= methodRowIndex && !entityModel->GetAttribAt(id)->IsMethod()))
         rows[id]->setBrush(QBrush{Qt::red});
     else if(id < methodRowIndex)
         rows[id]->setBrush(QBrush{Qt::lightGray});
@@ -335,6 +332,11 @@ void ClassDiagramItem::Check()
         else
             rows[i]->setBrush(QBrush{Qt::gray});
     }
+}
+
+void ClassDiagramItem::ModelNameChanged(QString name)
+{
+    this->text->setPlainText(name);
 }
 
 void ClassDiagramItem::NameChanged(QString name)

@@ -32,13 +32,88 @@ class ClassDiagramItem : public QObject
 public:
     explicit ClassDiagramItem(QGraphicsScene *scene, DiagramEntity *entityModel, QObject *parent = nullptr);
     ~ClassDiagramItem();
+
+    /**
+     * @param a an integer argument.
+     * @param s a constant character pointer.
+     * @return The test results
+     */
     void NewRow(QColor color);
+
+    /**
+     * a normal member taking two arguments and returning an integer value.
+     * @param a an integer argument.
+     * @param s a constant character pointer.
+     * @see Javadoc_Test()
+     * @see ~Javadoc_Test()
+     * @see testMeToo()
+     * @see publicVar()
+     * @return The test results
+     */
     void AddRow(QString textValue, QColor color);
+
+    /**
+     * a normal member taking two arguments and returning an integer value.
+     * @param a an integer argument.
+     * @param s a constant character pointer.
+     * @return The test results
+     */
+    TextItem *text;
+
+    /**
+     * a normal member taking two arguments and returning an integer value.
+     * @param a an integer argument.
+     * @param s a constant character pointer.
+     * @return The test results
+     */
     void RemoveRow();
+
+    /**
+     * a normal member taking two arguments and returning an integer value.
+     * @param a an integer argument.
+     * @param s a constant character pointer.
+     * @return The test results
+     */
     void PushMethodUp();
+
+    /**
+     * a normal member taking two arguments and returning an integer value.
+     * @param a an integer argument.
+     * @param s a constant character pointer.
+     * @return The test results
+     */
     void PushMethodDown();
+
+    /**
+     * a normal member taking two arguments and returning an integer value.
+     * @param a an integer argument.
+     * @param s a constant character pointer.
+     * @return The test results
+     */
     void SetUndoStack(QUndoStack *undoStack);
+
+    /**
+     * a normal member taking two arguments and returning an integer value.
+     * @param a an integer argument.
+     * @param s a constant character pointer.
+     * @return The test results
+     */
     int GetNodeID(QGraphicsEllipseItem *node);
+
+    /**
+     * a normal member taking two arguments and returning an integer value.
+     * @param a an integer argument.
+     * @param s a constant character pointer.
+     * @return The test results
+     */
+    void ModelNameChanged(QString name);
+
+    /**
+     * a normal member taking two arguments and returning an integer value.
+     * @param a an integer argument.
+     * @param s a constant character pointer.
+     * @return The test results
+     */
     int GetHeight();
     int GetWidth();
     void LastPosition();

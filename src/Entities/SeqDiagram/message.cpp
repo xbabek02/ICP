@@ -1,13 +1,5 @@
 #include "message.h"
 
-/*
-BlockEntity *sender;
-BlockEntity *owner;
-AttributeEntity  *method;
-bool async;
-int y_cord;
-*/
-
 int Message::id_generator = 1;
 
 Message::Message(BlockEntity *sender, BlockEntity *owner, int y_cord)
