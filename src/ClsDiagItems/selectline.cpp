@@ -1,3 +1,13 @@
+/**
+ * @file seqdscene.h
+ * @author Radomír Bábek, Martin Ohnút (xbabek02, xohnut01)
+ * @version 0.1
+ * @date 2022-05-09
+ *
+ * @copyright Copyright (c) 2022
+ *
+ */
+
 #include "selectline.h"
 
 SelectLine::SelectLine(int x1, int y1, int x2, int y2, QGraphicsItem *parent1, QObject *parent2) : QObject(parent2), QGraphicsLineItem(parent1)

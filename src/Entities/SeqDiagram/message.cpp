@@ -1,3 +1,13 @@
+/**
+ * @file seqdscene.h
+ * @author Radomír Bábek, Martin Ohnút (xbabek02, xohnut01)
+ * @version 0.1
+ * @date 2022-05-09
+ *
+ * @copyright Copyright (c) 2022
+ *
+ */
+
 #include "message.h"
 
 int Message::id_generator = 1;
@@ -7,7 +17,6 @@ Message::Message(BlockEntity *sender, BlockEntity *owner, int y_cord)
     this->id = id_generator;
     id_generator++;
     this->sender = sender;
-    this->name = "buzerant";
     this->owner = owner;
     this->y_cord = y_cord;
     this->async = false;
