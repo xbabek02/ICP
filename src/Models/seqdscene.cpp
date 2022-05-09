@@ -22,8 +22,17 @@ void SeqDScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     for (auto item : items(event->scenePos())) {
         if (auto ii = dynamic_cast<Rectangle*>(item)){
+            if (CountRectanglesAtCursor(event->scenePos()) > 1){
+                if (!ii->nested){ //resolving multiple lines from nested rectangles
+                    continue;
+                }
+            }
+
             editedMessage = new MessageItem(Enums::MessageTypes::sync, ii, event->scenePos().y());
             addItem(editedMessage);
+        }
+        else if (auto message = dynamic_cast<MessageItem*>(item)){
+            selectionChanged();
         }
     }
     qDebug() << event->scenePos();
@@ -40,6 +49,16 @@ void SeqDScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     editedMessage->UpdateDrawMessage(event->scenePos());
 
     QGraphicsScene::mouseMoveEvent(event);
+}
+
+int SeqDScene::CountRectanglesAtCursor(QPointF position){
+    int cnt = 0;
+    for (auto item : items(position)){
+        if (dynamic_cast<Rectangle*>(item)){
+            cnt++;
+        }
+    }
+    return cnt;
 }
 
 void SeqDScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
@@ -85,7 +104,7 @@ void SeqDScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         editedMessage->update();
         editedMessage = nullptr;
     }
-    
+
     QGraphicsScene::mouseReleaseEvent(event);
 }
 

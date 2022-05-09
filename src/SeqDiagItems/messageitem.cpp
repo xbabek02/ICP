@@ -101,7 +101,6 @@ void MessageItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
     }
 
     else if (type == Enums::returnal){
-        painter->drawRect(boundingRect());
         //setting the message name but warying possible rare exceptions
         if (sender){
             if (sender->origin){

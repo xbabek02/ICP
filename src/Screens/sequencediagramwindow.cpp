@@ -147,9 +147,11 @@ void SequenceDiagramWindow::OpenFile()
           else
               return;
     }
+    auto aux = scene;
+    //creating new scene
     SeqDScene *newscene = new SeqDScene(mm, ui->graphicsView);
     sequenceModel->LoadToAppState(newscene);
-    auto aux = scene;
+    scene = newscene;
     ui->graphicsView->setScene(newscene);
     delete aux;
 }
@@ -285,18 +287,6 @@ void SequenceDiagramWindow::ReturnMessage()
         }
     }
     Rectangle::UpdateLengths();
-}
-
-void SequenceDiagramWindow::RefreshModel()
-{
-    sequenceModel->Clear();
-    cm->ClearData();
-    mm->ClearData();
-    InitScene(mm);
-    SeqDScene *newscene = new SeqDScene(mm, ui->graphicsView);
-    cm->loadData();
-    sequenceModel->LoadToAppState(newscene);
-    ui->graphicsView->setScene(newscene);
 }
 
 void SequenceDiagramWindow::SetMethod()

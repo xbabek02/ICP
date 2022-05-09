@@ -43,7 +43,6 @@ public:
     explicit SequenceDiagramWindow(SequenceModel *sequenceModel, MainWindow *mainWindow, QWidget *parent = 0);
     ~SequenceDiagramWindow();
     void InitScene(MethodModel*mm);
-    void RefreshModel();
 
 private:
     Ui::SequenceDiagramWindow *ui;

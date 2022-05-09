@@ -20,13 +20,11 @@ public:
     QList<QGraphicsItem *> *GetAllDependentOwnRectFree(InstanceItem *instance);
     QList<QGraphicsItem *> *GetAllDependent(InstanceItem*instance);
 
-
-
+    int CountRectanglesAtCursor(QPointF position);
 public slots:
     void selChanged();
 
 protected:
-
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;

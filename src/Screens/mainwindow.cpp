@@ -149,7 +149,7 @@ void MainWindow::OpenFileButton()
             connections.append(item);
         }
     }
-
+    RefreshSequenceDiagrams();
 }
 /*
  *
@@ -179,8 +179,10 @@ void MainWindow::RefreshSequenceDiagrams()
 {
     for(auto diagram : sequenceDiagrams)
     {
-        diagram->RefreshModel();
+        diagram->hide();
+        delete diagram;
     }
+    sequenceDiagrams.clear();
 }
 
 void MainWindow::AddClassButton()
