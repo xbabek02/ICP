@@ -27,6 +27,8 @@ namespace Ui {
 class MainWindow;
 }
 
+class SequenceDiagramWindow;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -66,6 +68,8 @@ private:
     QList<ClassDiagramItem*> items;
     QList<Connection*> connections;
     QList<SingletonConnection*> singletons;
+    QList<SequenceDiagramWindow*> sequenceDiagrams;
+    void RefreshSequenceDiagrams();
     void AddSingletonLine();
     Model *mainModel;
     QUndoStack *undoStack = nullptr;

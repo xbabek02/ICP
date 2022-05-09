@@ -127,6 +127,7 @@ void SequenceModel::LoadToAppState(SeqDScene*newscene)
         //generating blocks for instances
         for (auto block : instance->GetBlocks()){
             auto rect_item = new Rectangle(ii,nullptr,block->GetYOffset());
+            ii->rectangles.append(rect_item);
             rect_item->setVisible(instance->GetVisible());
             rect_item->addedLength = block->GetAddedLength();
             rect_item->instance = ii;
@@ -145,11 +146,6 @@ void SequenceModel::LoadToAppState(SeqDScene*newscene)
         mi->setVisible(mi->sender->isVisible());
         mi->method_str = messageEnt->GetName();
         mi->solid = true;
-        int sender_x = sender->instance->scenePos().x();
-        int owner_x = owner->instance->scenePos().y();
-        int offset = sender->instance->width/2;
-        offset += sender_x < owner_x ? - Rectangle::width/2 : sender->width/2;
-        mi->setLine(sender->instance->scenePos().x() + offset, mi->line().y1(), owner->instance->scenePos().x() + offset - Rectangle::width, mi->line().y2());
         newscene->addItem(mi);
     }
 
@@ -250,6 +246,7 @@ void SequenceModel::RemoveInstance(InstanceEntity *instance)
         }
     }
 
+    delete instance;
 
 }
 
@@ -292,15 +289,11 @@ void SequenceModel::RemoveMessage(Message *message)
 void SequenceModel::Clear()
 {
     for(auto instance : instanceEntities)
-        delete instance;
-   instanceEntities.clear();
+        RemoveInstance(instance);
     for(auto block : blockEntities)
-        delete block;
-    blockEntities.clear();
+        RemoveBlock(block);
     for(auto message : messageEntities)
-        delete message;
-    messageEntities.clear();
-    instancesIdMap.clear();
+        RemoveMessage(message);
 }
 
 void SequenceModel::ConsistencyCheck()

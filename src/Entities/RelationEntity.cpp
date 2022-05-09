@@ -74,11 +74,15 @@ void RelationEntity::SetSingletonViewItem(SingletonConnection *thisViewItem)
     this->thisSingletonView = thisSingletonView;
 }
 
+SingletonConnection *RelationEntity::GetSingletonViewItem()
+{
+    return thisSingletonView;
+}
+
 Connection *RelationEntity::GetViewItem()
 {
     return thisViewItem;
 }
-
 
 void RelationEntity::AddRelationEntity()
 {
@@ -176,7 +180,8 @@ bool RelationEntity::operator!=(RelationEntity &other)
 
 RelationEntity::~RelationEntity()
 {
-    this->first->RemoveRelationFromVector(this);
+    if(this->first != this->second)
+        this->first->RemoveRelationFromVector(this);
     this->second->RemoveRelationFromVector(this);
     // remove relation entity??
     if (HasRelationEntity())

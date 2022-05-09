@@ -56,6 +56,7 @@ private:
 public slots:
     void Update();
     void Select(bool selected);
+    void ModelUpdate();
     void CardinalityUpdate();
 
 };

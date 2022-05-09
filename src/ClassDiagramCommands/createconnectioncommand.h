@@ -12,7 +12,8 @@ class CreateConnectionCommand : public QUndoCommand
 {
     public:
         CreateConnectionCommand(Model *model, ClassDiagramItem *item1, ClassDiagramItem *item2, QGraphicsEllipseItem *node1, QGraphicsEllipseItem *node2,
-                                QList<Connection*> *connections, QGraphicsScene *scene, QUndoCommand *parent = nullptr);
+                                QList<Connection*> *connections, QGraphicsScene *scene, RelationEntity *entity = nullptr, QUndoCommand *parent = nullptr);
+        CreateConnectionCommand(QGraphicsScene *scene, RelationEntity *relation);
         void undo() override;
         void redo() override;
 
@@ -22,7 +23,7 @@ class CreateConnectionCommand : public QUndoCommand
         Model *model;
         QList<Connection*> *connections;
         RelationEntity *relationModel;
-        ClassDiagramItem *item1;
+        ClassDiagramItem *item1 = nullptr;
         ClassDiagramItem *item2;
         QGraphicsEllipseItem *node1;
         QGraphicsEllipseItem *node2;

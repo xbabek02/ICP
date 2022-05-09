@@ -255,9 +255,21 @@ QList<Connection*> DiagramEntity::GetRelationViewItems()
     QList<Connection*> connections;
     for (auto relation : this->relations)
     {
-        connections.append(relation->GetViewItem());
+        if(relation->GetEntites().first != relation->GetEntites().second)
+            connections.append(relation->GetViewItem());
     }
     return connections;
+}
+
+QList<SingletonConnection*> DiagramEntity::GetSingletonViewItems()
+{
+    QList<SingletonConnection*> singletons;
+    for (auto relation : this->relations)
+    {
+        if(relation->GetEntites().first == relation->GetEntites().second)
+            singletons.append(relation->GetSingletonViewItem());
+    }
+    return singletons;
 }
 
 ClassDiagramItem *DiagramEntity::GetView()
@@ -265,6 +277,10 @@ ClassDiagramItem *DiagramEntity::GetView()
     return thisDiagramItem;
 }
 
+std::vector<RelationEntity *> DiagramEntity::GetRelations()
+{
+    return relations;
+}
 
 DiagramEntity::~DiagramEntity()
 {

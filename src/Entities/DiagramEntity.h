@@ -60,6 +60,9 @@ public:
     QList<InstanceEntity*> GetSeqDiagramInstances();
 
     QList<Connection*> GetRelationViewItems();
+    QList<SingletonConnection*> GetSingletonViewItems();
+
+    std::vector<RelationEntity *> GetRelations();
 
     ClassDiagramItem *GetView();
 

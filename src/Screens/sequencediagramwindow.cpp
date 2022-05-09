@@ -93,7 +93,6 @@ void SequenceDiagramWindow::CreateInstance(){
         this->instanceItems.append(ii);
         this->im->addRow(ii);
 
-
         scene->addItem(ii);
         scene->setFocusItem(ii);
 
@@ -143,7 +142,9 @@ void SequenceDiagramWindow::OpenFile()
           reply = QMessageBox::question(this, "Inconsistence detected", "Unknown methods and classes found. Do you want to add them to the class diagram?",
                                         QMessageBox::Yes|QMessageBox::No);
           if (reply == QMessageBox::Yes)
+          {
               sequenceModel->LoadFromFile(file.toStdString().c_str(), sequenceModel->GetMainModel(), mainWindow->GetItems(), true);
+          }
           else
               return;
     }
@@ -151,7 +152,18 @@ void SequenceDiagramWindow::OpenFile()
     sequenceModel->LoadToAppState(newscene);
     auto aux = scene;
     ui->graphicsView->setScene(newscene);
+}
 
+void SequenceDiagramWindow::RefreshModel()
+{
+    sequenceModel->Clear();
+    cm->ClearData();
+    mm->ClearData();
+    InitScene(mm);
+    SeqDScene *newscene = new SeqDScene(mm, ui->graphicsView);
+    cm->loadData();
+    sequenceModel->LoadToAppState(newscene);
+    ui->graphicsView->setScene(newscene);
 }
 
 void SequenceDiagramWindow::ProlongueLine(){
