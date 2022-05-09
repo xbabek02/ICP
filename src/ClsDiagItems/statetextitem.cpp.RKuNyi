@@ -1,0 +1,57 @@
+#include "statetextitem.h"
+#include <QPen>
+#include <cmath>
+#include <QVector2D>
+
+StateTextItem::StateTextItem(QGraphicsTextItem *parent)
+    : QGraphicsTextItem(parent)
+{
+    numberOfStates = 0;
+    setPlainText("*");
+    AddState("1");
+    AddState("*");
+
+    QFont f;
+    f.setPixelSize(15);
+    f.setBold(true);
+
+    this->setFont(f);
+    setFlag(QGraphicsItem::ItemIsSelectable);
+}
+
+void StateTextItem::AddState(QString text)
+{
+    textStates.append(text);
+    numberOfStates++;
+}
+
+void StateTextItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+    NextState();
+    QGraphicsTextItem::mousePressEvent(event);
+}
+
+void StateTextItem::NextState()
+{
+    currentState = (currentState + 1) % numberOfStates;
+    setPlainText(textStates[currentState]);
+}
+
+void StateTextItem::UpdatePosition(QPointF *position1, QPointF *position2)
+{
+    double newX = position1->x();
+    double newY = position1->y();
+    double deltaY = position1->y() - position2->y();
+    double deltaX = position1->x() - position2->x();
+
+    QPointF *vector = new QPointF(deltaX, deltaY);
+    QVector2D *normalizedVector = new QVector2D(*vector);
+    normalizedVector->normalize();
+
+    newX = newX - (deltaX / 8) + (normalizedVector->x() / 8);
+    newY = newY - (deltaY / 8) + (normalizedVector->y() / 8);
+    setPos(newX, newY);
+
+    delete normalizedVector;
+    delete vector;
+}

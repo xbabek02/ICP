@@ -5,10 +5,10 @@ namespace Enums
 {
     enum Cardinalities
     {
-        none,
         one,
         zero_to_n,
-        one_to_n
+        one_to_n,
+        none
     };
     enum RelationTypes
     {
@@ -27,11 +27,27 @@ namespace Enums
         first,
         second
     };
+    enum AccessModifiers
+    {
+        public_,
+        private_,
+        protected_,
+        package_
+    };
+    enum MessageTypes {
+        sync,
+        async,
+        returnal,
+        constructing,
+        desctructing
+    };
 
     const char*CardinalityToLiteral(Cardinalities c);
     const char*TypeToLiteral(RelationTypes t);
     Cardinalities LiteralToCardinality(const char* c);
     RelationTypes LiteralToType(const char* t);
+    const char*AccessModifierToLiteral(AccessModifiers am);
+    AccessModifiers LiteralToAccessModifier(const char*c);
 }
 
 

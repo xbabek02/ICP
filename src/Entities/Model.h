@@ -4,11 +4,15 @@
 #include "DiagramEntity.h"
 #include "RelationEntity.h"
 #include "ModelObject.h"
+#include <QGraphicsScene>
+#include <QUndoStack>
+#include <QObject>
 
 #include <vector>
 
 class RelationEntity;
 class DiagramEntity;
+class AttributeEntity;
 
 /**
  * @brief The Model class
@@ -26,11 +30,17 @@ private:
     std::vector<DiagramEntity *> entities;
     std::vector<RelationEntity *> relations;
 
+    QGraphicsScene *scene;
+    QUndoStack *undoStack;
+
 public:
     DiagramEntity *CreateEntity();
     DiagramEntity *CreateEntity(std::string);
     DiagramEntity *CreateEntity(std::string, int pos_x, int pos_y);
     DiagramEntity *GetEntityById(long Id);
+
+    std::vector<DiagramEntity*> &GetEntities();
+    std::vector<RelationEntity*> GetRelations();
 
     RelationEntity *CreateRelation(DiagramEntity &, DiagramEntity &); // for use by user
     RelationEntity *CreateRelation(std::string, DiagramEntity &, DiagramEntity &,
@@ -46,16 +56,22 @@ public:
     void DeleteEntity(DiagramEntity *);
     bool DeleteEntityById(long Id);
 
+    void SetScene(QGraphicsScene *scene);
+    QGraphicsScene *GetScene();
+    void SetUndoStack(QUndoStack *undoStack);
+    QUndoStack *GetUndoStack();
+
     void DeleteRelation(RelationEntity *);
     bool DeleteRelationById(long Id);
     RelationEntity *GetRelationById(long Id);
     void PushRelation(RelationEntity *);
+    AttributeEntity *GetAttributeEntityByName(DiagramEntity*de, std::string name);
 
     void SaveToFile(const char*);
     bool LoadFromFile(const char*);
 
     Model();
-    ~Model();
+    virtual ~Model();
 
     // exceptions
     class AllocException

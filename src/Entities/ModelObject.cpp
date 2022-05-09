@@ -1,4 +1,5 @@
 #include "ModelObject.h"
+#include <QDebug>
 
 void ModelObject::ChangePosition(int pos_x, int pos_y)
 {

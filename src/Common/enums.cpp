@@ -45,4 +45,27 @@ Enums::Cardinalities Enums::LiteralToCardinality(const char* c){
         return Enums::Cardinalities::none;
 }
 
+const char*Enums::AccessModifierToLiteral(Enums::AccessModifiers am){
+    if (am == Enums::AccessModifiers::package_)
+        return "package";
+    else if (am == Enums::AccessModifiers::private_)
+        return "private";
+    else if (am == Enums::AccessModifiers::protected_)
+        return "protected";
+    else
+        return "public";
+}
+
+Enums::AccessModifiers Enums::LiteralToAccessModifier(const char*c){
+    if (!strcmp(c, "package"))
+        return Enums::AccessModifiers::package_;
+    else if (!strcmp(c, "private"))
+        return Enums ::AccessModifiers::private_;
+    else if (!strcmp(c, "protected"))
+        return Enums::AccessModifiers::protected_;
+    else
+        return Enums::AccessModifiers::public_;
+}
+
+
 

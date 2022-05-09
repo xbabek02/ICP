@@ -40,6 +40,9 @@
         class_entity.setAttribute("name", QString::fromStdString(entity->GetName()));
         class_entity.setAttribute("pos_x", entity->GetPosX());
         class_entity.setAttribute("pos_y", entity->GetPosY());
+        class_entity.setAttribute("width", entity->GetWidth());
+        class_entity.setAttribute("first_method_index", entity->GetFirstMethodIndex());
+
 
         for (std::size_t i = 0; i < entity->AttribCount(); i++){
             at_entity = entity->GetAttribAt(i);
@@ -47,6 +50,7 @@
             //set attribute data
             attribute = document.createElement(QString::fromStdString("Attribute"));
             attribute.setAttribute("type", at_entity->GetType() == Enums::Attrib_type::field ? "field" : "method");
+            attribute.setAttribute("access_mod", Enums::AccessModifierToLiteral(at_entity->GetAccess()));
 
             attribute.appendChild(document.createTextNode(QString::fromStdString(at_entity->GetData())));
 
@@ -121,10 +125,13 @@ bool Model::LoadFromFile(const char*path){
                         QString name = subnode.attribute("name","name");
                         QString pos_x = subnode.attribute("pos_x", std::to_string(Model::default_pos_x).c_str());
                         QString pos_y = subnode.attribute("pos_y", std::to_string(Model::default_pos_y).c_str());
+                        QString firstMethodIndex = subnode.attribute("first_method_index", "0");
+                        QString width = subnode.attribute("width", "150");
 
                         //checks and conversions
                         int pos_x_conv;
                         int pos_y_conv;
+                        int firstMethodIndex_conv, width_conv;
 
                         ss.str("");
                         ss.clear();
@@ -144,20 +151,37 @@ bool Model::LoadFromFile(const char*path){
                         ss << pos_y.toStdString();
                         ss >> pos_y_conv;
 
+
                         if (pos_y != "0"){ //checking position y value
                             pos_y_conv = (!pos_y_conv ? default_pos_y : pos_y_conv);
                         }
 
+                        ss.str("");
+                        ss.clear();
+
+                        ss << firstMethodIndex.toStdString();
+                        ss >> firstMethodIndex_conv;
+
+                        ss.str("");
+                        ss.clear();
+
+                        ss << width.toStdString();
+                        ss >> width_conv;
+
                         auto e = this->CreateEntity(name.toStdString(), pos_x_conv, pos_y_conv);
                         id_map.insert(std::pair<QString, int>(id, e->GetId())); //link between file id and real id
-
+                        e->SetFirstMethodIndex(firstMethodIndex_conv);
+                        e->SetWidth(width_conv);
 
                         for (auto a_node = subnode.firstChildElement(); !a_node.isNull(); a_node = a_node.nextSiblingElement()){
                             if (a_node.tagName() == "Attribute"){
                                 QString type = a_node.attribute("type", "field");
+                                QString access_mod = a_node.attribute("access_mod", "public");
                                 Enums::Attrib_type type_conv = (type == "method" ? Enums::Attrib_type::method : Enums::Attrib_type::field);
+                                Enums::AccessModifiers access_conv = Enums::LiteralToAccessModifier(access_mod.toStdString().c_str());
                                 std::string data = a_node.text().toStdString();
                                 e->AddAttrib(type_conv, data);
+                                e->GetAttribAt(e->AttribCount()-1)->SetAccess(access_conv);
                             }
                         }
                     }
@@ -185,8 +209,8 @@ bool Model::LoadFromFile(const char*path){
                     auto card2_conv = Enums::LiteralToCardinality(card_second.toStdString().c_str());
                     Enums::RelationSide side_conv = side == "second" ? Enums::RelationSide::second : Enums::RelationSide::first;
 
+                    //converting QStrings to ints
                     int node1_conv, node2_conv, dist_conv;
-
                     ss.str("");
                     ss.clear();
 
@@ -204,6 +228,7 @@ bool Model::LoadFromFile(const char*path){
 
                     ss << distance.toStdString();
                     ss >> dist_conv;
+
 
                     auto type_conv = Enums::LiteralToType(type.toStdString().c_str());
 

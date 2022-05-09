@@ -64,6 +64,22 @@ bool inline RelationEntity::HasRelationEntity()
     return (this->relation_diagramEntity != nullptr);
 }
 
+void RelationEntity::SetThisViewItem(Connection *thisViewItem)
+{
+    this->thisViewItem = thisViewItem;
+}
+
+void RelationEntity::SetSingletonViewItem(SingletonConnection *thisViewItem)
+{
+    this->thisSingletonView = thisSingletonView;
+}
+
+Connection *RelationEntity::GetViewItem()
+{
+    return thisViewItem;
+}
+
+
 void RelationEntity::AddRelationEntity()
 {
     if (this->HasRelationEntity())
@@ -121,6 +137,7 @@ int RelationEntity::GetId()
 }
 
 std::pair<Enums::Cardinalities, Enums::Cardinalities> RelationEntity::GetCardinalities(){
+    cardinalities = std::make_pair(cardinality1, cardinality2);
     return this->cardinalities;
 }
 

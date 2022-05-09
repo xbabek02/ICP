@@ -15,12 +15,18 @@ class AttributeEntity
 {
 private:
     Enums::Attrib_type type;
+    //*******************
+    Enums::AccessModifiers access;
     std::string data;
 
 public:
+    bool IsOK();
+    bool IsMethod();
     void SetData(std::string);
     std::string GetData();
     void SwitchType();
+    void SetAccess(Enums::AccessModifiers access);
+    Enums::AccessModifiers GetAccess();
     Enums::Attrib_type GetType();
     AttributeEntity(Enums::Attrib_type, std::string);
     ~AttributeEntity();

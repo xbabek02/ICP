@@ -7,12 +7,16 @@
 #include "RelationEntity.h"
 #include "ModelObject.h"
 #include "../Common/enums.h"
+#include <QMetaType>
 #include "Model.h"
 #include "AttributeEntity.h"
+#include "../ClsDiagItems/classdiagramitem.h"
+#include "SeqDiagram/instanceentity.h"
 
+class InstanceEntity;
 class RelationEntity;
 class Model;
-
+class ClassDiagramItem;
 
 /**
  * @brief The DiagramEntity class
@@ -24,6 +28,14 @@ class DiagramEntity : public ModelObject
 private:
     const int ID;
     static int ID_generator;
+    //*******************
+    int width = 150;
+    //*******************
+    int firstMethodIndex = 0;
+
+    ClassDiagramItem *thisDiagramItem = nullptr;
+
+    QList<InstanceEntity*> seqDiagramInstances;
 
     std::string name;
     std::vector<AttributeEntity *> attributes;
@@ -40,10 +52,26 @@ public:
     inline void SwitchAttribTypeAt(std::size_t);
     void RemoveAttribLast();
     void RemoveAttribAt(std::size_t);
+    std::string GetAttributeName(int index);
+    QList<AttributeEntity*> GetMethods();
+
+    void AddSeqDiagramInstace(InstanceEntity *instace);
+    void RemoveSeqDiagramInstace(InstanceEntity *instace);
+    QList<InstanceEntity*> GetSeqDiagramInstances();
+
+    QList<Connection*> GetRelationViewItems();
+
+    ClassDiagramItem *GetView();
 
     std::string GetName();
     void SetName(std::string);
     int GetId();
+    void SetWidth(int value);
+    int GetWidth();
+    int GetFirstMethodIndex();
+    void SetFirstMethodIndex(int value);
+
+    AttributeEntity *FindAttributeByData(QString data);
 
     RelationEntity *CreateRelation(DiagramEntity &, Model *); // for use by user
     RelationEntity *CreateRelation(std::string, DiagramEntity &,
@@ -52,6 +80,9 @@ public:
                                    int node1, int node2, int distance); // for use from file
     bool RemoveRelationFromVector(RelationEntity *);
 
+    void SetDiagramItem(ClassDiagramItem *item);
+    ClassDiagramItem *GetDiagramItem();
+
     bool operator==(DiagramEntity &);
     bool operator!=(DiagramEntity &);
 
@@ -59,5 +90,7 @@ public:
 
     ~DiagramEntity();
 };
+
+Q_DECLARE_METATYPE(DiagramEntity*)
 
 #endif

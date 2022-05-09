@@ -4,10 +4,12 @@
 #include <string>
 #include "DiagramEntity.h"
 #include "../Common/enums.h"
+#include "../ClsDiagItems/connection.h"
+#include "../ClsDiagItems/singletonconnection.h"
 
-
+class Connection;
 class DiagramEntity;
-
+class SingletonConnection;
 
 /**
  * @brief The RelationEntity class
@@ -20,6 +22,8 @@ private:
     int ID;
     std::string relation_name;
 
+    Connection *thisViewItem;
+    SingletonConnection *thisSingletonView;
 
     DiagramEntity *first, *second, *relation_diagramEntity;
 
@@ -54,6 +58,9 @@ public:
     void ChangeCardinality2(Enums::Cardinalities);
     std::pair<Enums::Cardinalities, Enums::Cardinalities> GetCardinalities();
 
+    void SetThisViewItem(Connection *thisViewItem);
+
+    void SetSingletonViewItem(SingletonConnection *thisViewItem);
 
     int GetNode1();
     int GetNode2();
@@ -71,6 +78,8 @@ public:
 
     bool operator==(RelationEntity &other);
     bool operator!=(RelationEntity &other);
+
+    Connection *GetViewItem();
 
     ~RelationEntity();
 

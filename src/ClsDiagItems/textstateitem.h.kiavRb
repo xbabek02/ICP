@@ -1,0 +1,14 @@
+#ifndef TEXTSTATEITEM_H
+#define TEXTSTATEITEM_H
+
+#include <QObject>
+#include <QGraphicsTextItem>
+
+class TextStateItem : public QGraphicsTextItem
+{
+    Q_OBJECT
+public:
+    TextStateItem();
+};
+
+#endif // TEXTSTATEITEM_H

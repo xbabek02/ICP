@@ -138,10 +138,49 @@ RelationEntity *Model::GetRelationById(long Id)
     return nullptr;
 }
 
+std::vector<DiagramEntity*> &Model::GetEntities()
+{
+    return entities;
+}
+
+std::vector<RelationEntity*> Model::GetRelations()
+{
+    return relations;
+}
+
 void Model::DeleteRelation(RelationEntity *relation)
 {
     this->relations.erase(std::find(this->relations.begin(), this->relations.end(), relation));
     delete relation;
+}
+
+void Model::SetScene(QGraphicsScene *scene)
+{
+    this->scene = scene;
+}
+
+QGraphicsScene *Model::GetScene()
+{
+    return scene;
+}
+
+AttributeEntity *Model::GetAttributeEntityByName(DiagramEntity *de, std::string name)
+{
+    for (std::size_t i = 0; i < de->AttribCount(); i++){
+        if (de->GetAttributeName(i) == name){
+            return de->GetAttribAt(i);
+        }
+    }
+}
+
+void Model::SetUndoStack(QUndoStack *undoStack)
+{
+    this->undoStack = undoStack;
+}
+
+QUndoStack *Model::GetUndoStack()
+{
+    return this->undoStack;
 }
 
 Model::~Model()
